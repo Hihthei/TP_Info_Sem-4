@@ -10,7 +10,15 @@ int main() {
     start = clock();
     //----------------------------------------------------------
 
+    FILE* pfile = fopen("../TPF_TP_Sem-4/TPF_Donnees/Data/france_inter.txt", "r");
+    if (!pfile) {
+        pfile = stdin;
+    }
+    AssertNew(pfile);
 
+    //----------------------------------------------------------
+
+    fclose(pfile);
 
     //TIME CLOCK END --------------------------------------------
     end = clock();
