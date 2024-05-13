@@ -10,11 +10,36 @@ int main() {
     start = clock();
     //----------------------------------------------------------
 
-    FILE* pfile = fopen("../TPF_TP_Sem-4/TPF_Donnees/Data/france_inter.txt", "r");
+    FILE* pfile = fopen("../TPF_Donnees/Tests/1_Dijkstra/input1.txt", "r");
     if (!pfile) {
-        pfile = stdin;
+        return NULL;
+
     }
     AssertNew(pfile);
+
+    char path1[100];
+    char path2[100];
+
+    fscanf(pfile, "%[^\n]\n", path1);
+    fscanf(pfile, "%[^\n]\n", path2);
+    int n1, n2;
+    fscanf(pfile, "%d %d", &n1, &n2);
+
+   
+    fclose(pfile);
+    printf("%s\n%s\n%d %d\n", path1, path2, n1, n2);
+
+    Graph *graph = Graph_load("../TPF_Donnees/Data/laval_graph.txt");
+    //printf("%d", graph->size);
+
+    Path *p = Graph_shortestPath(graph, n1, n2);
+    Path_print(p);
+
+
+    
+
+
+
 
     //----------------------------------------------------------
 
