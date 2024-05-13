@@ -11,10 +11,6 @@ int main() {
     //----------------------------------------------------------
 
     FILE* pfile = fopen("../TPF_Donnees/Tests/1_Dijkstra/input1.txt", "r");
-    if (!pfile) {
-        return NULL;
-
-    }
     AssertNew(pfile);
 
     char path1[100];
@@ -25,21 +21,10 @@ int main() {
     int n1, n2;
     fscanf(pfile, "%d %d", &n1, &n2);
 
-   
-    fclose(pfile);
-    printf("%s\n%s\n%d %d\n", path1, path2, n1, n2);
-
     Graph *graph = Graph_load("../TPF_Donnees/Data/laval_graph.txt");
-    //printf("%d", graph->size);
 
     Path *p = Graph_shortestPath(graph, n1, n2);
     Path_print(p);
-
-
-    
-
-
-
 
     //----------------------------------------------------------
 
