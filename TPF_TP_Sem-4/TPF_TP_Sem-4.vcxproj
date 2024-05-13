@@ -137,6 +137,7 @@
     <ClInclude Include="ListInt.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="ShortestPath.h" />
+    <ClInclude Include="TSP.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Data\N21A54W.txt" />
