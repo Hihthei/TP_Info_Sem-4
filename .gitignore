@@ -3,7 +3,6 @@
 *.zip
 *.pdf
 *.txt
-*.filters
 
 # Dossiers et fichiers spécifiques à Visual Studio
 TP_Info_sem-4/x64

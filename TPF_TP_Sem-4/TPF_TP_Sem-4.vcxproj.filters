@@ -1,0 +1,298 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Data">
+      <UniqueIdentifier>{9432f0c3-0488-4396-a4d3-ace9aa73c4a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\TPF_Donnees">
+      <UniqueIdentifier>{11d3baa8-f65a-4191-9c8e-5fd53acc3336}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\TPF_Donnees\Data">
+      <UniqueIdentifier>{dca8b49a-c351-46cc-9aa7-be758bad9775}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\TPF_Donnees\Tests">
+      <UniqueIdentifier>{1e9ef2d1-d5ca-41ac-a5b1-75ec52b06725}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\TPF_Donnees\Tests\dijkstra">
+      <UniqueIdentifier>{ace17adf-cb91-42b0-9c08-a2134683b002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix">
+      <UniqueIdentifier>{9497ba0d-dd9d-4622-a514-9ea5bdd927ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\TPF_Donnees\Tests\TSP_Heuristic">
+      <UniqueIdentifier>{d09caca8-ac39-4380-9efb-b4a9fdad85d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\TPF_Donnees\Tests\TSP_ACO">
+      <UniqueIdentifier>{fbdd425c-7282-467a-a272-db7f41353776}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\TPF_Donnees\Tests\Grande_instance">
+      <UniqueIdentifier>{f29b54b8-8f6c-4f17-833d-6ddbb5d54204}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Graph.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ListInt.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ShortestPath.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Settings.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ShortestPath.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ListInt.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="TSP.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Data\N5A9.txt">
+      <Filter>Fichiers de ressources\Data</Filter>
+    </Text>
+    <Text Include="Data\N5A9W.txt">
+      <Filter>Fichiers de ressources\Data</Filter>
+    </Text>
+    <Text Include="Data\N5A12W_NO.txt">
+      <Filter>Fichiers de ressources\Data</Filter>
+    </Text>
+    <Text Include="Data\N7A23W.txt">
+      <Filter>Fichiers de ressources\Data</Filter>
+    </Text>
+    <Text Include="Data\N21A54W.txt">
+      <Filter>Fichiers de ressources\Data</Filter>
+    </Text>
+    <Text Include="TPF_Donnees\Data\france_graph.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Data</Filter>
+    </Text>
+    <Text Include="TPF_Donnees\Data\france_inter.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Data</Filter>
+    </Text>
+    <Text Include="TPF_Donnees\Data\laval_graph.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Data</Filter>
+    </Text>
+    <Text Include="TPF_Donnees\Data\laval_inter.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Data</Filter>
+    </Text>
+    <Text Include="TPF_Donnees\Data\mayenne_graph.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Data</Filter>
+    </Text>
+    <Text Include="TPF_Donnees\Data\mayenne_inter.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Data</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\1_Dijkstra\output4.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\1_Dijkstra\output5.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\1_Dijkstra\input1.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\1_Dijkstra\input2.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\1_Dijkstra\input3.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\1_Dijkstra\input4.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\1_Dijkstra\input5.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\1_Dijkstra\output1.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\1_Dijkstra\output2.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\1_Dijkstra\output3.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\5_Grande_instance\output.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Grande_instance</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\5_Grande_instance\input.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Grande_instance</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\4_TSP_ACO\output4.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_ACO</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\4_TSP_ACO\input1.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_ACO</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\4_TSP_ACO\input2.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_ACO</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\4_TSP_ACO\input3.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_ACO</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\4_TSP_ACO\input4.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_ACO</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\4_TSP_ACO\output1.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_ACO</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\4_TSP_ACO\output2.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_ACO</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\4_TSP_ACO\output3.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_ACO</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\3_TSP_Heuristic\output1.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_Heuristic</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\3_TSP_Heuristic\output2.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_Heuristic</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\3_TSP_Heuristic\output3.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_Heuristic</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\3_TSP_Heuristic\output4.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_Heuristic</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\3_TSP_Heuristic\input1.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_Heuristic</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\3_TSP_Heuristic\input2.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_Heuristic</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\3_TSP_Heuristic\input3.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_Heuristic</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\3_TSP_Heuristic\input4.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_Heuristic</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\2_Path_matrix\output4_full.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\2_Path_matrix\input1.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\2_Path_matrix\input2.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\2_Path_matrix\input3.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\2_Path_matrix\input4.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\2_Path_matrix\output1.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\2_Path_matrix\output1_full.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\2_Path_matrix\output2.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\2_Path_matrix\output2_full.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\2_Path_matrix\output3.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\2_Path_matrix\output3_full.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </Text>
+    <Text Include="..\TPF_Donnees\Tests\2_Path_matrix\output4.txt">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\TPF_Donnees\Tests\1_Dijkstra\output4.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\1_Dijkstra\output5.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\1_Dijkstra\README.md">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\1_Dijkstra\output1.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\1_Dijkstra\output2.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\1_Dijkstra\output3.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\dijkstra</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\5_Grande_instance\output.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Grande_instance</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\4_TSP_ACO\README.md">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_ACO</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\4_TSP_ACO\output1.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_ACO</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\4_TSP_ACO\output2.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_ACO</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\4_TSP_ACO\output3.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_ACO</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\4_TSP_ACO\output4.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_ACO</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\3_TSP_Heuristic\output1.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_Heuristic</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\3_TSP_Heuristic\output2.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_Heuristic</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\3_TSP_Heuristic\output3.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_Heuristic</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\3_TSP_Heuristic\output4.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_Heuristic</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\3_TSP_Heuristic\README.md">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\TSP_Heuristic</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\2_Path_matrix\README.md">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\2_Path_matrix\output1.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\2_Path_matrix\output2.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\2_Path_matrix\output3.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </None>
+    <None Include="..\TPF_Donnees\Tests\2_Path_matrix\output4.geojson">
+      <Filter>Fichiers de ressources\TPF_Donnees\Tests\Path_Matrix</Filter>
+    </None>
+  </ItemGroup>
+</Project>

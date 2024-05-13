@@ -2,6 +2,7 @@
 #include "Graph.h"
 #include "ListInt.h"
 #include "ShortestPath.h"
+#include "TSP.h"
 
 int main() {
     //TIME CLOCK INITIALISATION --------------------------------
@@ -13,8 +14,8 @@ int main() {
     FILE* pfile = fopen("../TPF_Donnees/Tests/1_Dijkstra/input1.txt", "r");
     AssertNew(pfile);
 
-    char path1[100];
-    char path2[100];
+    char path1[124];
+    char path2[124];
 
     fscanf(pfile, "%[^\n]\n", path1);
     fscanf(pfile, "%[^\n]\n", path2);
