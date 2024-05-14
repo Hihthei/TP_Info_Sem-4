@@ -18,7 +18,7 @@ int main() {
     Path* path = NULL;
 
     int tmp = 0, i = 0, j = 0;
-
+    
 #ifdef DIJKSTRA_1 // tas binaire
     pfile = fopen("../TPF_Donnees/1_Dijkstra/input2.txt", "r");
     AssertNew(pfile);
@@ -99,9 +99,11 @@ int main() {
         }
     }
 
-    //Sous_Graph_print(under_graph);
-
+    //classic_output
     //Graph_print(graph_matrix);
+    
+    //output_full
+    Sous_Graph_print(under_graph);
 
     //FREE------------------------------------------------------
     free(tab_node);
