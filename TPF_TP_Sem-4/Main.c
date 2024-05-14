@@ -1,59 +1,57 @@
-#include "Settings.h"
-#include "Graph.h"
-#include "ListInt.h"
-#include "ShortestPath.h"
-#include "Bin_Heap.h"
+#include "FileFonction.h"
+
 int main() {
-    //TIME CLOCK INITIALISATION --------------------------------
+    //TIME-CLOCK-INITIALISATION---------------------------------
     clock_t start = 0, middle = 0, end = 0;
     double cpu_time_used = 0;
     start = clock();
-    //----------------------------------------------------------
 
-    FILE* pfile = fopen("../TPF_Donnees/Tests/1_Dijkstra/input5.txt", "r");
-    if (!pfile) {
-        return 0;
-
-    }
+    //FILE-READ-------------------------------------------------
+    FILE* pfile = fopen("../TPF_Donnees/Tests/2_Path_Matrix/input1.txt", "r");
     AssertNew(pfile);
 
-    char path1[100];
-    char path2[100];
+    char path1[124] = "";
+    char path2[124] = "";
 
-    int r =fscanf(pfile, "%[^\n]\n", path1);
-    r =fscanf(pfile, "%[^\n]\n", path2);
-    int n1, n2;
-    r = fscanf(pfile, "%d %d", &n1, &n2);
+    fscanf(pfile, "%[^\n]\n", path1);
+    fscanf(pfile, "%[^\n]\n", path2);
 
-    printf("%s\n%s\n%d %d\n\n", path1, path2, n1, n2);
+    int n1 = 0, n2 = 0;
+    fscanf(pfile, "%d %d", &n1, &n2);
 
-    Graph *graph = Graph_load("../TPF_Donnees/Data/france_graph.txt");
-    //printf("%d", graph->size);
+    fclose(pfile);
 
+    //GRAPH-----------------------------------------------------
+    Graph* graph = Graph_load("../TPF_Donnees/Data/laval_graph.txt");
+    Coord* coord = Print_createTab("../TPF_Donnees/Data/laval_inter.txt");
+    
+    Path* path = Graph_shortestPath(graph, n1, n2);
+  
     Path* p = Binary_Graph_shortestPath(graph, n1, n2);
     Path_print(p);
 
+    //FILE-CREATE-----------------------------------------------
+    char* fileName = "..\\Output_geojson\\test.geojson";
+    if (FileFonction_fileExist(fileName))
+        FileFonction_deleteFile(fileName);
+
+    FileFonction_createFile(fileName);
     
+    FileFunction_writeFile(fileName, path, coord);
 
-
-
-
-
-    
-
-
-
-
-    //----------------------------------------------------------
-
-    fclose(pfile);
+    //FREE------------------------------------------------------
     Graph_destroy(graph);
-    //TIME CLOCK END --------------------------------------------
+    graph = NULL;
+  
+    free(coord->tab);
+    free(coord);
+
+    //TIME CLOCK END -------------------------------------------
     end = clock();
     cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
     printf("____________________________\n"
         "\nTemps d'execution : %.3fs.\n", cpu_time_used);
-    //----------------------------------------------------------
 
+    //----------------------------------------------------------
     return EXIT_SUCCESS;
 }
