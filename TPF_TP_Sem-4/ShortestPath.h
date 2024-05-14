@@ -62,6 +62,8 @@
     ///     pour chaque noeud sa distance avec le noeud start.
     void Graph_dijkstra(Graph *graph, int start, int end, int *predecessors, float *distances);
 
+    Path* Binary_Graph_shortestPath(Graph* graph, int start, int end);
+    void Binary_Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* distances);
     /// @brief Reconstruit un chemin à partir de la sortie de l'algorithme de
     /// Dijkstra.
     /// 
