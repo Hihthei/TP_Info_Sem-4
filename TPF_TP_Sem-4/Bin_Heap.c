@@ -14,13 +14,13 @@ Bin_Heap* Bin_Heap_create(int size) {
 		AssertNew(heap->tab[i]);
 	}
 	
-	Bin_Heap_print(heap);
+	//Bin_Heap_print(heap);
 	//Bin_Heap_pos_test(heap);
 	return heap;
 
 }
 void Bin_Heap_add(Bin_Heap *heap,int index, float value) {
-	heap->tab[heap->sizeact][0] = index;
+	heap->tab[heap->sizeact][0] = (float)index;
 	heap->tab[heap->sizeact][1] = value;
 	heap->pos[heap->sizeact] = index;
 
@@ -29,7 +29,7 @@ void Bin_Heap_add(Bin_Heap *heap,int index, float value) {
 	float ipere = heap->tab[(act - 1) / 2][0];
 	float pere =heap->tab[(act-1)/2][1];
 	while (act != 0 && value < pere ) {
-		heap->tab[(act - 1) / 2][0] = index;
+		heap->tab[(act - 1) / 2][0] = (float)index;
 		heap->tab[(act - 1) / 2][1] = value;
 		heap->pos[index] = (act - 1) / 2;
 		heap->tab[act][0] = ipere;
@@ -85,6 +85,7 @@ void Bin_Heap_remove(Bin_Heap* heap) {
 	}
 	return ;
 }
+
 void Bin_Heap_print(Bin_Heap* heap) {
 	for (int i = 0; i < heap->sizeact; i++) {
 		printf("(%.1f,%.1f) ", heap->tab[i][0], heap->tab[i][1]);

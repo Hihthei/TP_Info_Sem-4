@@ -21,4 +21,12 @@
     INLINE int minInt(int a, int b) { return a < b ? a : b; }
     INLINE int maxInt(int a, int b) { return a > b ? a : b; }
 
+    //#define FILE_CREATE
+
+    //#define DIJKSTRA_1
+
+    #define PATH_MATRIX_2
+
+
+
 #endif
