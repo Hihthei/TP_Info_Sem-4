@@ -1,4 +1,4 @@
-#include "FileFonction.h"
+#include "Sous_Graph.h"
 
 int main() {
     //TIME-CLOCK-INITIALISATION---------------------------------
@@ -7,44 +7,128 @@ int main() {
     start = clock();
 
     //FILE-READ-------------------------------------------------
-    FILE* pfile = fopen("../TPF_Donnees/Tests/2_Path_Matrix/input1.txt", "r");
+
+    FILE* pfile = NULL;
+
+    char path_graph[128] = "";
+    char path_inter[128] = "";
+
+    Graph* graph_plan = NULL;
+    Coord* coord_plan = NULL;
+    Path* path = NULL;
+
+    int tmp = 0, i = 0, j = 0;
+
+#ifdef DIJKSTRA_1 // tas binaire
+    pfile = fopen("../TPF_Donnees/1_Dijkstra/input2.txt", "r");
     AssertNew(pfile);
 
-    char path1[124] = "";
-    char path2[124] = "";
+    tmp = fscanf(pfile, "%[^\n]\n", path_graph);
+    tmp = fscanf(pfile, "%[^\n]\n", path_inter);
 
-    fscanf(pfile, "%[^\n]\n", path1);
-    fscanf(pfile, "%[^\n]\n", path2);
-
-    int n1 = 0, n2 = 0;
-    fscanf(pfile, "%d %d", &n1, &n2);
-
-    fclose(pfile);
+    int debut = 0, fin = 0;
+    tmp = fscanf(pfile, "%d %d", &debut, &fin);
 
     //GRAPH-----------------------------------------------------
-    Graph* graph = Graph_load("../TPF_Donnees/Data/laval_graph.txt");
-    Coord* coord = Print_createTab("../TPF_Donnees/Data/laval_inter.txt");
-    
-    Path* path = Graph_shortestPath(graph, n1, n2);
-  
-    Path* p = Binary_Graph_shortestPath(graph, n1, n2);
-    Path_print(p);
+    graph_plan = Graph_load(path_graph);
+    coord_plan = Print_createTab(path_inter);
 
-    //FILE-CREATE-----------------------------------------------
-    char* fileName = "..\\Output_geojson\\test.geojson";
-    if (FileFonction_fileExist(fileName))
-        FileFonction_deleteFile(fileName);
+    path = Binary_Graph_shortestPath(graph_plan, debut, fin);
 
-    FileFonction_createFile(fileName);
+    Path_print(path);
+
+    #ifdef FILE_CREATE
+        //FILE-CREATE-----------------------------------------------
+        char* fileName = "..\\Output_geojson\\Dijkstra.geojson";
+        if (FileFonction_fileExist(fileName))
+            FileFonction_deleteFile(fileName);
+
+        FileFonction_createFile(fileName);
+
+        Print_writeGeoJson(fileName, path, coord);
+    #endif // FILE_CREATE
+#endif // DIJKSTRA_1
+
+#ifdef PATH_MATRIX_2
+    if (pfile)
+        fclose(pfile);
+
+    pfile = fopen("../TPF_Donnees/2_Path_matrix/input1.txt", "r");
+    AssertNew(pfile);
+
+    tmp = fscanf(pfile, "%[^\n]\n", path_graph);
+    tmp = fscanf(pfile, "%[^\n]\n", path_inter);
+
+    int node_count = 0;
+
+    tmp = fscanf(pfile, "%d\n", &node_count);
+
+    //GRAPH-----------------------------------------------------
+    if (graph_plan)
+        Graph_destroy(graph_plan);
+
+    if (coord_plan)
+        Print_destroyCoord(coord_plan);
+
+    graph_plan = Graph_load(path_graph);
+    coord_plan = Print_createTab(path_inter);
+
+    Graph* graph_matrix = Graph_create(node_count);
+
+    int* tab_node = (int*)calloc(node_count, sizeof(int));
+
+    UnderGraph* under_graph = Sous_Graph_create(node_count);
+
+    if (!path)
+        Path_destroy(path);
+
+    for (i = 0; i < node_count; i++)
+        tmp = fscanf(pfile, "%d", &tab_node[i]);
+
+    for (i = 0; i < node_count; i++) {
+        for (j = 0; j < node_count; j++) {
+            if (i == j)
+                continue;
+
+            path = Binary_Graph_shortestPath(graph_plan, tab_node[i], tab_node[j]);
+
+            if (Graph_getArc(graph_matrix, i, j) == NULL && path != NULL)
+                Graph_setArc(graph_matrix, i, j, path->distance);
+
+            under_graph->sous_graph[i][j] = path;
+        }
+    }
+
+    Sous_Graph_print(under_graph);
+
+    //Graph_print(graph_matrix);
+
+    free(tab_node);
+
+    Sous_Graph_destroy(under_graph);
+
+    Graph_destroy(graph_matrix);
     
-    FileFunction_writeFile(fileName, path, coord);
+#endif // PATH_MATRIX_2
 
     //FREE------------------------------------------------------
-    Graph_destroy(graph);
-    graph = NULL;
-  
-    free(coord->tab);
-    free(coord);
+    if (graph_plan) {
+        Graph_destroy(graph_plan);
+        graph_plan = NULL;
+    }
+
+    if (coord_plan && coord_plan->tab) {
+        Print_destroyCoord(coord_plan);
+        coord_plan = NULL;
+    }
+
+    if (!path) {
+        Path_destroy(path);
+        path = NULL;
+    }
+
+    if (pfile)
+        fclose(pfile);
 
     //TIME CLOCK END -------------------------------------------
     end = clock();
