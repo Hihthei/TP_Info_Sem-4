@@ -1,4 +1,3 @@
-
 #include "FileFonction.h"
 
 int main() {
@@ -27,6 +26,9 @@ int main() {
     Coord* coord = Print_createTab("../TPF_Donnees/Data/laval_inter.txt");
     
     Path* path = Graph_shortestPath(graph, n1, n2);
+  
+    Path* p = Binary_Graph_shortestPath(graph, n1, n2);
+    Path_print(p);
 
     //FILE-CREATE-----------------------------------------------
     char* fileName = "..\\Output_geojson\\test.geojson";
@@ -40,7 +42,7 @@ int main() {
     //FREE------------------------------------------------------
     Graph_destroy(graph);
     graph = NULL;
-
+  
     free(coord->tab);
     free(coord);
 
