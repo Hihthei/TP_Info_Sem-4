@@ -139,7 +139,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileFonction.h" />
-    <ClInclude Include="glouton.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="ListInt.h" />
     <ClInclude Include="Print_GeoJson.h" />
