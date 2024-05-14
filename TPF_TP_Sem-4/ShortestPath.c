@@ -123,17 +123,19 @@ void Binary_Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, 
 
     Bin_Heap* heap = Bin_Heap_create(graph->size);
     Bin_Heap_add(heap, start, 0.f);
-    
+  
+    //Bin_Heap_print(heap);
+  
     for (int n = 0; n < graph->size; n++)
     {
         // Recherche le noeud de distance minimale
 
-        int currID = heap->tab[0][0];
+        int currID = (int)heap->tab[0][0];
         float currDist = heap->tab[0][1];
 
         Bin_Heap_remove(heap);
         while (explored[currID]) {
-            currID = heap->tab[0][0];
+            currID = (int)heap->tab[0][0];
             currDist = heap->tab[0][1];
             Bin_Heap_remove(heap);
         }
