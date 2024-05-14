@@ -134,6 +134,7 @@
     <ClCompile Include="Print_GeoJson.c" />
     <ClCompile Include="ShortestPath.c" />
     <ClCompile Include="Bin_Heap.c" />
+    <ClCompile Include="Sous_Graph.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileFonction.h" />
@@ -143,6 +144,7 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="ShortestPath.h" />
     <ClInclude Include="Bin_Heap.h" />
+    <ClInclude Include="Sous_Graph.h" />
     <ClInclude Include="TSP.h" />
   </ItemGroup>
   <ItemGroup>
