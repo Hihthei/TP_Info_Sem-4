@@ -1,5 +1,5 @@
 #include "ShortestPath.h"
-
+#include "Bin_Heap.h"
 Path *Graph_shortestPath(Graph *graph, int start, int end)
 {
     int size = Graph_size(graph);
@@ -16,6 +16,31 @@ Path *Graph_shortestPath(Graph *graph, int start, int end)
     Graph_dijkstra(graph, start, end, predecessors, distances);
 
     Path *path = Graph_dijkstraGetPath(predecessors, distances, end);
+
+    free(predecessors);
+    predecessors = NULL;
+    free(distances);
+    distances = NULL;
+
+    return path;
+}
+
+Path* Binary_Graph_shortestPath(Graph* graph, int start, int end)
+{
+    int size = Graph_size(graph);
+
+    assert(0 <= start && start < size);
+    assert(end < size);
+
+    int* predecessors = (int*)calloc(size, sizeof(int));
+    AssertNew(predecessors);
+
+    float* distances = (float*)calloc(size, sizeof(float));
+    AssertNew(distances);
+
+    Binary_Graph_dijkstra(graph, start, end, predecessors, distances);
+
+    Path* path = Graph_dijkstraGetPath(predecessors, distances, end);
 
     free(predecessors);
     predecessors = NULL;
@@ -42,7 +67,9 @@ void Graph_dijkstra(Graph *graph, int start, int end, int *predecessors, float *
     }
     distances[start] = 0.0f;
 
-    while (true)
+
+
+    for(int n =0;n!=graph->size;n++)
     {
         // Recherche le noeud de distance minimale
         int currID = -1;
@@ -55,7 +82,6 @@ void Graph_dijkstra(Graph *graph, int start, int end, int *predecessors, float *
                 currID = i;
             }
         }
-
         // Condition d'arret
         if (currID < 0 || currID == end)
             break;
@@ -76,6 +102,80 @@ void Graph_dijkstra(Graph *graph, int start, int end, int *predecessors, float *
         }
     }
     free(explored);
+}
+
+void Binary_Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* distances)
+{
+    int size = Graph_size(graph);
+
+    assert(0 <= start && start < size);
+    assert(end < size);
+
+    bool* explored = (bool*)calloc(Graph_size(graph), sizeof(bool));
+    AssertNew(explored);
+
+    for (int i = 0; i < size; i++)
+    {
+        predecessors[i] = -1;
+        distances[i] = INFINITY;
+    }
+    distances[start] = 0.0f;
+
+    Bin_Heap* heap = Bin_Heap_create(graph->size);
+
+    Bin_Heap_add(heap, start, 0.f);
+    
+    Bin_Heap_print(heap);
+    
+    for (int n = 0; n < graph->size; n++)
+    {
+        // Recherche le noeud de distance minimale
+
+        int currID = heap->tab[0][0];
+        float currDist = heap->tab[0][1];
+
+        //printf("remove %d??\n", currID);
+        Bin_Heap_remove(heap);
+        //printf("removed\n");
+        //Bin_Heap_print(heap);
+        while (explored[currID]) {
+            currID = heap->tab[0][0];
+            currDist = heap->tab[0][1];
+            Bin_Heap_remove(heap);
+            //Bin_Heap_print(heap);
+        }
+        //printf("remove %d\n", currID);
+        // Condition d'arret
+        if (currID < 0 || currID == end)
+            break;
+
+        explored[currID] = true;
+
+        // Met à jour les voisins
+        for (ArcList* arc = Graph_getArcList(graph, currID);
+            arc != NULL; arc = arc->next)
+        {
+            int nextID = arc->target;
+            float dist = distances[currID] + arc->weight;
+            if (distances[nextID] > dist)
+            {
+                distances[nextID] = dist;
+                //printf("-----------------\n");
+                //printf("add %d %f\n", nextID, dist);
+
+                Bin_Heap_add(heap, nextID, dist);
+                //Bin_Heap_print(heap);
+                //printf("-----------------\n");
+                predecessors[nextID] = currID;
+            }
+        }
+    }
+    free(explored);
+    for (int l = 0; l != graph->size; l++) {
+                free(heap->tab[l]);
+            }
+        free(heap->pos);
+        free(heap);
 }
 
 Path *Graph_dijkstraGetPath(int *predecessors, float *distances, int end)
