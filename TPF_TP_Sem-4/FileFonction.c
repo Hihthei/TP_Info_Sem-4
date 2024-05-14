@@ -79,11 +79,11 @@ void FileFunction_writeFile(char* fileName, Path* path, Coord* coord) {
 	ListIntNode* curr = sentinel->next;
 
 	while (curr != sentinel->prev) {
-		fprintf(pfile,"\t\t\t\t\t[%f, %f],\n", coord->tab[curr->value].longitude, coord->tab[curr->value].latitude);
+		fprintf(pfile,"\t\t\t\t\t[%f, %f],\n", coord->tab[curr->value].latitude, coord->tab[curr->value].longitude);
 		curr = curr->next;
 	}
 	if (curr != sentinel) {
-		fprintf(pfile, "\t\t\t\t\t[%f, %f]\n", coord->tab[curr->value].longitude, coord->tab[curr->value].latitude);
+		fprintf(pfile, "\t\t\t\t\t[%f, %f]\n", coord->tab[curr->value].latitude, coord->tab[curr->value].longitude);
 	}
 
 	fprintf(pfile, "\t\t\t\t]\n"
