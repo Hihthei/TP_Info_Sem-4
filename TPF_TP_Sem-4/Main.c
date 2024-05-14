@@ -35,12 +35,6 @@ int main() {
     Path *p = Graph_shortestPath(graph, n1, n2);
     Path_print(p);
 
-
-    
-
-
-
-
     //----------------------------------------------------------
 
     fclose(pfile);
