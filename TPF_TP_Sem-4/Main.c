@@ -99,10 +99,11 @@ int main() {
         }
     }
 
-    Sous_Graph_print(under_graph);
+    //Sous_Graph_print(under_graph);
 
     //Graph_print(graph_matrix);
 
+    //FREE------------------------------------------------------
     free(tab_node);
 
     Sous_Graph_destroy(under_graph);
