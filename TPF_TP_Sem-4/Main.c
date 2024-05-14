@@ -7,7 +7,7 @@ int main() {
     start = clock();
 
     //FILE-READ-------------------------------------------------
-    FILE* pfile = fopen("../TPF_Donnees/Tests/2_Path_Matrix/input1.txt", "r");
+    FILE* pfile = fopen("../TPF_Donnees/Tests/1_Dijkstra/input1.txt", "r");
     AssertNew(pfile);
 
     char path1[124] = "";
