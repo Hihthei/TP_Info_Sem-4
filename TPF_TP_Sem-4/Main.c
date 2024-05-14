@@ -7,7 +7,6 @@ int main() {
     start = clock();
 
     //FILE-READ-------------------------------------------------
-
     FILE* pfile = NULL;
 
     char path_graph[128] = "";

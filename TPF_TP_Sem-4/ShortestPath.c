@@ -122,11 +122,10 @@ void Binary_Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, 
     distances[start] = 0.0f;
 
     Bin_Heap* heap = Bin_Heap_create(graph->size);
-
     Bin_Heap_add(heap, start, 0.f);
-    
+  
     //Bin_Heap_print(heap);
-    
+  
     for (int n = 0; n < graph->size; n++)
     {
         // Recherche le noeud de distance minimale
@@ -134,17 +133,12 @@ void Binary_Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, 
         int currID = (int)heap->tab[0][0];
         float currDist = heap->tab[0][1];
 
-        //printf("remove %d??\n", currID);
         Bin_Heap_remove(heap);
-        //printf("removed\n");
-        //Bin_Heap_print(heap);
         while (explored[currID]) {
             currID = (int)heap->tab[0][0];
             currDist = heap->tab[0][1];
             Bin_Heap_remove(heap);
-            //Bin_Heap_print(heap);
         }
-        //printf("remove %d\n", currID);
         // Condition d'arret
         if (currID < 0 || currID == end)
             break;
@@ -157,25 +151,15 @@ void Binary_Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, 
         {
             int nextID = arc->target;
             float dist = distances[currID] + arc->weight;
-            if (distances[nextID] > dist)
-            {
+            if (distances[nextID] > dist){
                 distances[nextID] = dist;
-                //printf("-----------------\n");
-                //printf("add %d %f\n", nextID, dist);
-
-                Bin_Heap_add(heap, nextID, dist);
-                //Bin_Heap_print(heap);
-                //printf("-----------------\n");
                 predecessors[nextID] = currID;
+                Bin_Heap_add(heap, nextID, dist);   
             }
         }
     }
     free(explored);
-    for (int l = 0; l != graph->size; l++) {
-                free(heap->tab[l]);
-            }
-        free(heap->pos);
-        free(heap);
+    Bin_Heap_destroy(heap);
 }
 
 Path *Graph_dijkstraGetPath(int *predecessors, float *distances, int end)
