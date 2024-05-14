@@ -1,7 +1,7 @@
 #ifndef FILEFONCTION_H
 #define FILEFONCTION_H
 
-#include "Settings.h"
+#include "Print_GeoJson.h"
 
 /**
  * @brief

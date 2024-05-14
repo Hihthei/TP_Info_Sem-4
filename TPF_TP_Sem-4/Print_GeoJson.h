@@ -1,7 +1,11 @@
 #ifndef GEOJSON_H
 #define GEOJSON_H
 
-#include "FileFonction.h"
+#include "Settings.h"
+#include "Graph.h"
+#include "ListInt.h"
+#include "ShortestPath.h"
+#include "TSP.h"
 
 typedef struct Coord Coord;
 typedef struct CoordTab CoordTab;

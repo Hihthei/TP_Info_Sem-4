@@ -1,8 +1,5 @@
-#include "Graph.h"
-#include "ListInt.h"
-#include "ShortestPath.h"
-#include "TSP.h"
-#include "Print_GeoJson.h"
+
+#include "FileFonction.h"
 
 int main() {
     //TIME-CLOCK-INITIALISATION---------------------------------
@@ -29,8 +26,7 @@ int main() {
     Graph* graph = Graph_load("../TPF_Donnees/Data/laval_graph.txt");
     Coord* coord = Print_createTab("../TPF_Donnees/Data/laval_inter.txt");
     
-    Path* p = Graph_shortestPath(graph, n1, n2);
-    Path_print(p);
+    Path* path = Graph_shortestPath(graph, n1, n2);
 
     //FILE-CREATE-----------------------------------------------
     char* fileName = "..\\Output_geojson\\test.geojson";
@@ -38,8 +34,8 @@ int main() {
         FileFonction_deleteFile(fileName);
 
     FileFonction_createFile(fileName);
-
-    FileFunction_writeFile(fileName);
+    
+    FileFunction_writeFile(fileName, path, coord);
 
     //FREE------------------------------------------------------
     free(graph);
