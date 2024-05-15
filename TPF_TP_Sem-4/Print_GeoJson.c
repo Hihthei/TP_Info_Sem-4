@@ -149,5 +149,4 @@ void Print_writeGeoJson_Bonus(char* fileName, Path* path, Coord* coord, int* poi
 		"}\n");
 
 	fclose(pfile);
-
 }
