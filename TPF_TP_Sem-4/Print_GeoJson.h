@@ -30,7 +30,6 @@
 
 	void Print_writeGeoJson(char* fileName, Path* path, Coord* coord);
 
-
 	//Print with point
 	void Print_writeGeoJson_Bonus(char* fileName, Path* path, Coord* coord, int* point, int taille);
 

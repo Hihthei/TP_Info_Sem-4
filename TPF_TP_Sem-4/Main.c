@@ -64,10 +64,6 @@ int main() {
 
     Path_print(path);
 
-    int* point = (int*)calloc(2, sizeof(int));
-    AssertNew(point);
-    point[0] = debut;
-    point[1] = fin;
     #ifdef FILE_CREATE
         //FILE-CREATE-----------------------------------------------
         char* fileName = "..\\Output_geojson\\Dijkstra.geojson";
@@ -77,7 +73,7 @@ int main() {
         FileFonction_createFile(fileName);
 
         //Print_writeGeoJson(fileName, path, coord_plan);
-        Print_writeGeoJson_Bonus(fileName, path, coord_plan,point,2);
+        Print_writeGeoJson_Bonus(fileName, path, coord_plan, tab, 2);
     #endif // FILE_CREATE
 
     //FREE------------------------------------------------------
@@ -233,6 +229,7 @@ int main() {
     free_coord(&coord_plan);
 
     free_path(&path);
+    free_path(&complet_path);
 
     fclose(pfile);
     pfile = NULL;
@@ -275,34 +272,8 @@ int main() {
     }
 
     //ACO------------------------------------------------------
-    Graph* phem = Graph_create(graph_aco->size);
-    for (int u = 0; u != phem->size; u++) {
-        for (int v = 0; v != phem->size; v++) {
-            if (u != v) {
-                Graph_setArc(phem, u, v, 1.f);
-            }
-        }
-    }
-
-    Graph_print(phem);
-
-    bool* explored = (bool*)calloc(graph_aco->size, sizeof(bool));
-    AssertNew(explored);
-
-    explored[0] = true;
-
-    float* prob = (float*)calloc(graph_aco->size, sizeof(float));
-    AssertNew(prob);
-
-    prob = Graph_acoGetProbabilities(graph_aco, phem, 0, explored, 1, 1);
-
-    for (int i = 0; i != graph_aco->size; i++) {
-        printf("%.2f ", prob[i]);
-    }
-    printf("\n");
-    Path* patate = Graph_acoConstructPath(graph_aco, phem, 0, 1, 1);
-
-    Path_print(patate);
+    path = Graph_tspFromACO(graph_aco, 0, 100000, node_count_aco, 1, 1 ,0.01, 4);
+    Path_print(path);
     
 #ifdef FILE_CREATE_TODO
     //FILE-CREATE-----------------------------------------------
