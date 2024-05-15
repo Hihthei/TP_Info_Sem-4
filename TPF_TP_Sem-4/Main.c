@@ -64,10 +64,6 @@ int main() {
 
     Path_print(path);
 
-    int* point = (int*)calloc(2, sizeof(int));
-    AssertNew(point);
-    point[0] = debut;
-    point[1] = fin;
     #ifdef FILE_CREATE
         //FILE-CREATE-----------------------------------------------
         char* fileName = "..\\Output_geojson\\Dijkstra.geojson";
@@ -77,7 +73,7 @@ int main() {
         FileFonction_createFile(fileName);
 
         //Print_writeGeoJson(fileName, path, coord_plan);
-        Print_writeGeoJson_Bonus(fileName, path, coord_plan,point,2);
+        Print_writeGeoJson_Bonus(fileName, path, coord_plan, tab, 2);
     #endif // FILE_CREATE
 
     //FREE------------------------------------------------------
@@ -233,6 +229,7 @@ int main() {
     free_coord(&coord_plan);
 
     free_path(&path);
+    free_path(&complet_path);
 
     fclose(pfile);
     pfile = NULL;
@@ -257,6 +254,8 @@ int main() {
 
     Graph* graph_aco = Graph_create(node_count_aco);
 
+    UnderGraph* under_graph_aco = Sous_Graph_create(node_count_aco);
+
     int* tab_node_aco = (int*)calloc(node_count_aco, sizeof(int));
 
     for (i = 0; i < node_count_aco; i++)
@@ -271,40 +270,37 @@ int main() {
 
             if (Graph_getArc(graph_aco, i, j) == NULL && path != NULL)
                 Graph_setArc(graph_aco, i, j, path->distance);
+
+            under_graph_aco->sous_graph[i][j] = path;
         }
     }
 
     //ACO------------------------------------------------------
-    Graph* phem = Graph_create(graph_aco->size);
-    for (int u = 0; u != phem->size; u++) {
-        for (int v = 0; v != phem->size; v++) {
-            if (u != v) {
-                Graph_setArc(phem, u, v, 1.f);
-            }
+    path = Graph_tspFromACO(graph_aco, 0, 10, 100, 1.0f, 1.0f , 0.01f, 4.0f);
+    Path_print(path);
+    
+#ifdef FILE_CREATE_TODO
+    Path* complet_path_aco = NULL;
+
+    if (!ListInt_isEmpty(path->list)) {
+        complet_path_aco = Path_create(tab_node_aco[0]);
+
+        int prev = 0, current = ListInt_popFirst(path->list);
+
+        while (!ListInt_isEmpty(path->list)) {
+            prev = current;
+            
+            current = ListInt_popFirst(path->list);
+
+            ListInt* aco_list = under_graph_aco->sous_graph[prev][current]->list;
+
+            if (!ListInt_isEmpty(aco_list))
+                tmp = ListInt_popFirst(aco_list);
+
+            ListInt_concatenate(complet_path_aco->list, aco_list);
         }
     }
 
-    Graph_print(phem);
-
-    bool* explored = (bool*)calloc(graph_aco->size, sizeof(bool));
-    AssertNew(explored);
-
-    explored[0] = true;
-
-    float* prob = (float*)calloc(graph_aco->size, sizeof(float));
-    AssertNew(prob);
-
-    prob = Graph_acoGetProbabilities(graph_aco, phem, 0, explored, 1, 1);
-
-    for (int i = 0; i != graph_aco->size; i++) {
-        printf("%.2f ", prob[i]);
-    }
-    printf("\n");
-    Path* patate = Graph_acoConstructPath(graph_aco, phem, 0, 1, 1);
-
-    Path_print(patate);
-    
-#ifdef FILE_CREATE_TODO
     //FILE-CREATE-----------------------------------------------
     char* fileName = "..\\Output_geojson\\TSP_Aco.geojson";
     if (FileFonction_fileExist(fileName))
@@ -312,7 +308,8 @@ int main() {
 
     FileFonction_createFile(fileName);
 
-    Print_writeGeoJson(fileName, path, coord_plan);
+    //Print_writeGeoJson(fileName, complet_path_aco, coord_plan);
+    Print_writeGeoJson_Bonus(fileName, complet_path_aco, coord_plan, tab_node_aco, node_count_aco);
 #endif // FILE_CREATE
 
     //FREE------------------------------------------------------
