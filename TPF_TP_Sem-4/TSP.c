@@ -74,7 +74,7 @@ float* Graph_acoGetProbabilities(
 Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 	int start, float a, float b) {
 
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	int prev = start;
 	Path* T = Path_create(start);
 	int next = -1;
@@ -137,7 +137,7 @@ Path* Graph_tspFromACO(
 		Path** Tj = (Path**)calloc(antCount, sizeof(Path*));
 	}*/
 
-	//Création du graph pheromones
+	//CrÃ©ation du graph pheromones
 	Graph* phem = Graph_create(graph->size);
 	for (int u = 0; u != phem->size; u++) {
 		for (int v = 0; v != phem->size; v++) {

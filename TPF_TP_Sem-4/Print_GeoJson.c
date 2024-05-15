@@ -25,8 +25,10 @@ void Print_destroyCoord(Coord* coord) {
 	if (!coord)
 		return;
 
-	free(coord->tab);
-	coord->tab = NULL;
+	if (coord->tab) {
+		free(coord->tab);
+		coord->tab = NULL;
+	}
 
 	free(coord);
 	coord = NULL;
