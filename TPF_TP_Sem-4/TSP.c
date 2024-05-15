@@ -57,7 +57,7 @@ float* Graph_acoGetProbabilities(
 			while (tmp) {
 				float *tmpdist = Graph_getArc(graph, station, tmp->target);
 				float tmpdistc = *tmpdist;
-				diviseur += pow(tmp->weight, alpha) * pow(1 / tmpdistc, beta);
+				diviseur += (float)(pow(tmp->weight, alpha) * pow(1 / tmpdistc, beta));
 				tmp = tmp->next;
 			}
 			probabilities[arclist->target] /= diviseur;
@@ -72,7 +72,7 @@ float* Graph_acoGetProbabilities(
 Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 	int start, float a, float b) {
 
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	int prev = start;
 	Path* T = Path_create(start);
 	int next = -1;
