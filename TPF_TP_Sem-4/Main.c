@@ -64,6 +64,10 @@ int main() {
 
     Path_print(path);
 
+    int* point = (int*)calloc(2, sizeof(int));
+    AssertNew(point);
+    point[0] = debut;
+    point[1] = fin;
     #ifdef FILE_CREATE
         //FILE-CREATE-----------------------------------------------
         char* fileName = "..\\Output_geojson\\Dijkstra.geojson";
@@ -72,7 +76,8 @@ int main() {
 
         FileFonction_createFile(fileName);
 
-        Print_writeGeoJson(fileName, path, coord_plan);
+        //Print_writeGeoJson(fileName, path, coord_plan);
+        Print_writeGeoJson_Bonus(fileName, path, coord_plan,point,2);
     #endif // FILE_CREATE
 
     //FREE------------------------------------------------------
@@ -210,9 +215,7 @@ int main() {
                 ListInt_concatenate(complet_path->list, heuristic_list);
             }
         }
-
-        Path_print(complet_path);
-
+  
         //FILE-CREATE-----------------------------------------------
         char* fileName = "..\\Output_geojson\\TSP_Heuristic.geojson";
         if (FileFonction_fileExist(fileName))

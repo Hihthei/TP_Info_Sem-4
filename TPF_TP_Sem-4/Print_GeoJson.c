@@ -70,7 +70,7 @@ void Print_writeGeoJson(char* fileName, Path* path, Coord* coord) {
 	if (curr != sentinel) {
 		fprintf(pfile, "\t\t\t\t\t[%f, %f]\n", coord->tab[curr->value].latitude, coord->tab[curr->value].longitude);
 	}
-
+	
 	fprintf(pfile, "\t\t\t\t]\n"
 		"\t\t\t}\n"
 		"\t\t}\n"
@@ -78,4 +78,60 @@ void Print_writeGeoJson(char* fileName, Path* path, Coord* coord) {
 		"}\n");
 
 	fclose(pfile);
+}
+
+void Print_writeGeoJson_Bonus(char* fileName, Path* path, Coord* coord, int* point, int taille) {
+	FILE* pfile = fopen(fileName, "w");
+	AssertNew(pfile);
+	AssertNew(path);
+	AssertNew(path->list);
+	AssertNew(coord);
+
+
+	fprintf(pfile, "{\n"
+		"\t\"type\": \"FeatureCollection\",\n"
+		"\t\"features\" : [\n"
+		"\t\t{\n"
+		"\t\t\t\"type\": \"Feature\",\n"
+		"\t\t\t\"geometry\" : {\n"
+		"\t\t\t\t\"type\": \"LineString\",\n"
+		"\t\t\t\t\"coordinates\" : [\n");
+
+	ListIntNode* sentinel = &(path->list->sentinel);
+	ListIntNode* curr = sentinel->next;
+
+	while (curr != sentinel->prev) {
+		fprintf(pfile, "\t\t\t\t\t[%f, %f],\n", coord->tab[curr->value].latitude, coord->tab[curr->value].longitude);
+		curr = curr->next;
+	}
+	if (curr != sentinel) {
+		fprintf(pfile, "\t\t\t\t\t[%f, %f]\n", coord->tab[curr->value].latitude, coord->tab[curr->value].longitude);
+	}
+
+	fprintf(pfile, "\t\t\t\t]\n"
+		"\t\t\t}\n"
+		"\t\t},\n");
+	for (int node = 0; node != taille; node++) {
+		fprintf(pfile, "\t\t{\n"
+			"\t\t\t\"type\": \"Feature\",\n"
+			"\t\t\t\"geometry\" : {\n"
+			"\t\t\t\t\"type\": \"Point\",\n"
+			"\t\t\t\t\"coordinates\" : [\n");
+
+		fprintf(pfile, "\t\t\t\t\t%f, %f\n", coord->tab[point[node]].latitude, coord->tab[point[node]].longitude);
+		if (node != taille - 1) {
+			fprintf(pfile, "\t\t\t\t]\n"
+				"\t\t\t}\n"
+				"\t\t},\n");
+		}
+		
+	}
+	fprintf(pfile, "\t\t\t\t]\n"
+		"\t\t\t}\n"
+		"\t\t}\n"
+		"\t]\n"
+		"}\n");
+
+	fclose(pfile);
+
 }

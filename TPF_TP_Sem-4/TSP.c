@@ -55,9 +55,11 @@ float* Graph_acoGetProbabilities(
 			tmp = pheromones->nodeList[station].arcList;
 			diviseur = 0;
 			while (tmp) {
-				float *tmpdist = Graph_getArc(graph, station, tmp->target);
-				float tmpdistc = *tmpdist;
-				diviseur += (float)(pow(tmp->weight, alpha) * pow(1 / tmpdistc, beta));
+				if (!explored[tmp->target]) {
+					float* tmpdist = Graph_getArc(graph, station, tmp->target);
+					float tmpdistc = *tmpdist;
+					diviseur += pow(tmp->weight, alpha) * pow(1 / tmpdistc, beta);
+				}
 				tmp = tmp->next;
 			}
 			probabilities[arclist->target] /= diviseur;
@@ -85,56 +87,88 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 	explored[0] = true;
 	float* prob = (float*)calloc(distances->size, sizeof(float));
 	AssertNew(prob);
-	prob = Graph_acoGetProbabilities(distances, pheros, start, explored, a,b);
+	
 	for (int i = 0; i != distances->size-1; i++) {
+		prob = Graph_acoGetProbabilities(distances, pheros, start, explored, a, b);
+		for (int i = 0; i != pheros->size; i++) {
+			printf("%.2f ", prob[i]);
+		}
+		printf("\n");
 		tmp = pheros->nodeList[prev].arcList;
 		next = -1;
 		nextw = -1;
 		r = rand() % (100 + 1);
 		printf("r = %d\n", r);
 		pr = 0.f;
-		/*while (tmp && r > pr) {
-			
-			printf("%f\n", prob[tmp->target]*100);
-			pr += prob[tmp->target]*100;
-			tmp = tmp->next;
-			printf("pract = %.0f\n", pr);
-		}*/
+	
 		int n = 0;
 		for (; pr < r; n++) {
 			pr += prob[n] * 100;
 		}
 		printf("%d \n", n-1);
 		//printf("pr = %.0f -> %d\n", pr,tmp->target);
-		/*
+		
 		next = n-1;
+		explored[next] = true;
 		float *tmpw = Graph_getArc(distances, prev, n-1);
 		float tmpwc = *tmpw;
 		nextw = tmpwc;
 		ListInt_insertLast(T->list, next);
 		T->distance += nextw;
-		prev = next;*/
+		prev = next;
 	}
-	/*
+	
 	float *last = Graph_getArc(distances, next, start);
 	float tmpc = *last;
 	ListInt_insertLast(T->list, start);
-	T->distance += tmpc;*/
+	T->distance += tmpc;
 	return T;
 }
 
 
+Path* Graph_tspFromACO(
+	Graph* graph, int station, int iterationCount, int antCount,
+	float alpha, float beta, float rho, float q) {
 
-/*Path* Graph_tspFromACO(Graph* graph, int s, float a, float b, float p, float q, int n, int k) {
-	Path* T = (Path*)calloc(1, sizeof(Path));
-	Graph* P = (Graph*)calloc(1, sizeof(Graph));
-	for (int i = 0; i != n; i++) {
-		for (int j = 0; j != k; j++) {
 
+	Path* T = (Path*)calloc(1,sizeof(Path));
+	Path** Tj = (Path**)calloc(antCount, sizeof(Path*));
+	/*for (int ant = 0; ant != antCount; ant++) {
+		Path** Tj = (Path**)calloc(antCount, sizeof(Path*));
+	}*/
+
+	//Création du graph pheromones
+	Graph* phem = Graph_create(graph->size);
+	for (int u = 0; u != phem->size; u++) {
+		for (int v = 0; v != phem->size; v++) {
+			if (u != v) {
+				Graph_setArc(phem, u, v, 1.f);
+			}
 		}
 	}
+	for (int i = 0; i != iterationCount; i++) {
+		for (int j = 0; j != antCount; j++) {
+			Tj[j] = Graph_acoConstructPath(graph, phem, station, alpha, beta);
+			if (ListInt_isEmpty(T->list) || T->distance > Tj[j]->distance) {
+				T = Tj[j];
+			}
+		}
+		//Graph_acoPheromoneGlobalUpdate(phem, rho);
+		for (int j = 0; j != antCount; j++) {
+			//Graph_acoPheromoneUpdatePath(phem, Tj[j], q);
+		}
 
+	}
+	return T;
+}
 
-
-	return NULL;
-}*/
+void Graph_acoPheromoneGlobalUpdate(Graph* pheromones, float rho) {
+	ArcList* arc;
+	for (int i = 0; i != pheromones->size; i++) {
+		arc= pheromones->nodeList[i].arcList;
+		while (arc) {
+			arc->weight = (1 - rho) * arc->weight;
+			arc = arc->next;
+		}
+	}
+}
