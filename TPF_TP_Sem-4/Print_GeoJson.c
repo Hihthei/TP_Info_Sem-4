@@ -70,7 +70,7 @@ void Print_writeGeoJson(char* fileName, Path* path, Coord* coord) {
 	if (curr != sentinel) {
 		fprintf(pfile, "\t\t\t\t\t[%f, %f]\n", coord->tab[curr->value].latitude, coord->tab[curr->value].longitude);
 	}
-
+	
 	fprintf(pfile, "\t\t\t\t]\n"
 		"\t\t\t}\n"
 		"\t\t}\n"
