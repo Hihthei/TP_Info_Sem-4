@@ -279,7 +279,7 @@ int main() {
     path = Graph_tspFromACO(graph_aco, 0, 10, 100, 1.0f, 1.0f , 0.01f, 4.0f);
     Path_print(path);
     
-#ifdef FILE_CREATE
+#ifdef FILE_CREATE_TODO
     Path* complet_path_aco = NULL;
 
     if (!ListInt_isEmpty(path->list)) {
