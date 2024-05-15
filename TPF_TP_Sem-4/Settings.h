@@ -23,11 +23,11 @@
 
     #define FILE_CREATE
 
-    //#define DIJKSTRA_1
+    #define DIJKSTRA_1
 
     //#define PATH_MATRIX_2
 
-    #define TSP_HEURISTIC_3
+    //#define TSP_HEURISTIC_3
 
     // #define TSP_ACO_4
 

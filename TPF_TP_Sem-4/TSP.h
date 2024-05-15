@@ -10,6 +10,8 @@
     /// @return La tournée.
     Path* Graph_tspFromHeuristic(Graph* graph, int station);
 
+    Path* Full_Path_tspFromHeuristic(Path* pathindex, int station);
+
     /// @brief Calcule une tounée dans un graphe en se basant sur l'algorithme d'optimisation ACO.
     /// @param graph le graphe des distances. Il doit être complet.
     /// @param station l'identifiant du sommet de départ et d'arrivée de la tournée.

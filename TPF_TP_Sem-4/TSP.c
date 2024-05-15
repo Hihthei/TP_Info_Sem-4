@@ -162,17 +162,13 @@ Path* Graph_tspFromACO(
 	return T;
 }
 
-
-/*Path* Graph_tspFromACO(Graph* graph, int s, float a, float b, float p, float q, int n, int k) {
-	Path* T = (Path*)calloc(1, sizeof(Path));
-	Graph* P = (Graph*)calloc(1, sizeof(Graph));
-	for (int i = 0; i != n; i++) {
-		for (int j = 0; j != k; j++) {
-
+void Graph_acoPheromoneGlobalUpdate(Graph* pheromones, float rho) {
+	ArcList* arc;
+	for (int i = 0; i != pheromones->size; i++) {
+		arc= pheromones->nodeList[i].arcList;
+		while (arc) {
+			arc->weight = (1 - rho) * arc->weight;
+			arc = arc->next;
 		}
 	}
-
-
-
-	return NULL;
-}*/
+}
