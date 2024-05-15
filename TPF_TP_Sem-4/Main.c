@@ -44,7 +44,7 @@ int main() {
 
         FileFonction_createFile(fileName);
 
-        Print_writeGeoJson(fileName, path, coord);
+        Print_writeGeoJson(fileName, path, coord_plan);
     #endif // FILE_CREATE
 #endif // DIJKSTRA_1
 
