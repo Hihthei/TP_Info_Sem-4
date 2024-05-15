@@ -72,6 +72,14 @@ void Print_writeGeoJson(char* fileName, Path* path, Coord* coord) {
 	}
 	
 	fprintf(pfile, "\t\t\t\t]\n"
+		"\t\t\t},\n"
+		"\t\t\t\"properties\": {\n"
+		"\t\t\t\t\"_umap_options\": {\n"
+		"\t\t\t\t\t\"color\": \"#03224c\",\n"
+		"\t\t\t\t\t\"weight\": 2,\n"
+		"\t\t\t\t\t\"opacity\": 1\n"
+		"\t\t\t\t}\n"
+		
 		"\t\t\t}\n"
 		"\t\t}\n"
 		"\t]\n"
@@ -109,6 +117,14 @@ void Print_writeGeoJson_Bonus(char* fileName, Path* path, Coord* coord, int* poi
 	}
 
 	fprintf(pfile, "\t\t\t\t]\n"
+		"\t\t\t},\n"
+		"\t\t\t\"properties\": {\n"
+		"\t\t\t\t\"_umap_options\": {\n"
+		"\t\t\t\t\t\"color\": \"#03224c\",\n"
+		"\t\t\t\t\t\"weight\": 2,\n"
+		"\t\t\t\t\t\"opacity\": 1\n"
+		"\t\t\t\t}\n"
+		
 		"\t\t\t}\n"
 		"\t\t},\n");
 	for (int node = 0; node != taille; node++) {
