@@ -116,7 +116,7 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 	srand((unsigned int)time(NULL));
 	int prev = start;
 	Path* T = Path_create(start);
-	int next = -1;
+	int next = start;
 	int nextw = -1;
 	float pr = 0;
 	int r;
@@ -129,6 +129,10 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 	
 	for (int i = 0; i != distances->size-1; i++) {
 		prob = Graph_acoGetProbabilities(distances, pheros, start, explored, a, b);
+
+		prev = next;
+
+		
 		/*for (int i = 0; i != pheros->size; i++) {
 			printf("%.2f ", prob[i]);
 		}*/
@@ -136,25 +140,26 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 		tmp = pheros->nodeList[prev].arcList;
 		next = -1;
 		nextw = -1;
+		
 		r = rand() % (100 + 1);
 		//printf("r = %d\n", r);
 		pr = 0.f;
 	
 		int n = 0;
-		for (; pr < r; n++) {
+		for (; pr < r && n < pheros->size; n++) {
 			pr += prob[n] * 100;
 		}
 		//printf("%d \n", n-1);
 		//printf("pr = %.0f -> %d\n", pr,tmp->target);
 		
-		next = n-1;
+		next = (n <= 0 ? n : (n - 1));
 		explored[next] = true;
-		float *tmpw = Graph_getArc(distances, prev, n-1);
+
+		float *tmpw = Graph_getArc(distances, prev, next);
 		float tmpwc = *tmpw;
 		nextw = (int)tmpwc;
 		ListInt_insertLast(T->list, next);
 		T->distance += nextw;
-		prev = next;
 	}
 	
 	float *last = Graph_getArc(distances, next, start);
