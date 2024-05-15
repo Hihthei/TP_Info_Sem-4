@@ -92,9 +92,6 @@
     <ClInclude Include="FileFonction.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="glouton.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Bin_Heap.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>

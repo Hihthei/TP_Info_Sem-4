@@ -102,8 +102,41 @@ int main() {
     //Graph_print(graph_matrix);
     
     //output_full
-    Sous_Graph_print(under_graph);
+    //Sous_Graph_print(under_graph);
+    
+    Graph_print(graph_matrix);
 
+    //Path*pat = Graph_tspFromHeuristic(graph_matrix, 0);
+
+    //Path_print(pat);
+
+
+    Graph* phem = Graph_create(graph_matrix->size);
+    for (int u = 0; u != phem->size; u++) {
+        for (int v = 0; v != phem->size; v++) {
+            if (u != v) {
+                Graph_setArc(phem, u, v, 1.f);
+            }
+        }
+    }
+
+    Graph_print(phem);
+
+    bool* explored = (bool*)calloc(graph_matrix->size, sizeof(bool));
+    AssertNew(explored);
+    explored[0] = true;
+
+    float* prob = (float*)calloc(graph_matrix->size, sizeof(float));
+    AssertNew(prob);
+    prob = Graph_acoGetProbabilities(graph_matrix, phem, 0, explored, 1, 1);
+
+    for (int i = 0; i != graph_matrix->size;i++) {
+        printf("%.2f ", prob[i]);
+    }
+    printf("\n");
+    Path* patate = Graph_acoConstructPath(graph_matrix, phem,0, 1, 1);
+
+    Path_print(patate);
     //FREE------------------------------------------------------
     free(tab_node);
 
