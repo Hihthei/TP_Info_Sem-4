@@ -49,7 +49,7 @@ int main() {
     int tmp = 0, i = 0, j = 0;
     
 #ifdef DIJKSTRA_1 // tas binaire
-    pfile = fopen("../TPF_Donnees/1_Dijkstra/input4.txt", "r");
+    pfile = fopen("../TPF_Donnees/1_Dijkstra/input1.txt", "r");
     AssertNew(pfile);
 
     tmp = fscanf(pfile, "%[^\n]\n", path_graph);
@@ -64,11 +64,11 @@ int main() {
 
     path = Binary_Graph_shortestPath(graph_plan, tab[0], tab[1]);
 
-    Path_print(path);
+    //Path_print(path);
 
     #ifdef FILE_CREATE
         //FILE-CREATE-----------------------------------------------
-        *fileName = "..\\Output_geojson\\Dijkstra.geojson";
+        strcpy(fileName, "..\\Output_geojson\\Dijkstra.geojson");
         if (FileFonction_fileExist(fileName))
             FileFonction_deleteFile(fileName);
 
@@ -90,7 +90,7 @@ int main() {
 #endif // DIJKSTRA_1
 
 #ifdef PATH_MATRIX_2
-    pfile = fopen("../TPF_Donnees/2_Path_matrix/input3.txt", "r");
+    pfile = fopen("../TPF_Donnees/2_Path_matrix/input1.txt", "r");
     if (!pfile)
         pfile = stdin;
 
@@ -160,7 +160,7 @@ int main() {
 #endif // PATH_MATRIX_2
 
 #ifdef TSP_HEURISTIC_3
-    pfile = fopen("../TPF_Donnees/3_TSP_Heuristic/input2.txt", "r");
+    pfile = fopen("../TPF_Donnees/3_TSP_Heuristic/input1.txt", "r");
     AssertNew(pfile);
 
     tmp = fscanf(pfile, "%[^\n]\n", path_graph);
@@ -224,13 +224,13 @@ int main() {
         }
   
         //FILE-CREATE-----------------------------------------------
-        *fileName = "..\\Output_geojson\\TSP_Heuristic.geojson";
+        strcpy(fileName, "..\\Output_geojson\\TSP_Heuristic.geojson");
         if (FileFonction_fileExist(fileName))
             FileFonction_deleteFile(fileName);
         
         FileFonction_createFile(fileName);
 
-        Print_writeGeoJson(fileName, complet_path, coord_plan);
+        Print_writeGeoJson_Bonus(fileName, complet_path, coord_plan, tab_node_heuristic, node_count_heuristic);
     #endif // FILE_CREATE
 
     //FREE------------------------------------------------------

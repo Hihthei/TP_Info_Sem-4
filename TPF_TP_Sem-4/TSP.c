@@ -43,7 +43,7 @@ Path* Graph_tspFromACO(	Graph* graph, int station, int iterationCount, int antCo
 		}
 		Graph_acoPheromoneGlobalUpdate(phem, rho);
 		for (int j = 0; j != antCount; j++) {
-			Graph_acoPheromoneUpdatePath(phem, Tj[j], q);
+			Graph_acoPheromoneUpdatePath(phem, graph, Tj[j], q);
 		}
 	}
 	return T;
@@ -181,8 +181,35 @@ void Graph_acoPheromoneGlobalUpdate(Graph* pheromones, float rho) {
 	}
 }
 
-void Graph_acoPheromoneUpdatePath(Graph* pheromones, Path* path, float q) {
+float Sum_path_dist(Path* path, Graph* graph) {
+	ListIntNode* sentinel = &(path->list->sentinel);
+	ListIntNode* curr = sentinel->next;
+
+	int last_id = 0, curr_id = curr->value;
+
+	float sum_path_dist = 0.0f;
+
+	curr = curr->next;
+
+	while (curr != sentinel) {
+		last_id = curr_id;
+		curr_id = curr->value;
+
+		float* arc = Graph_getArc(graph, last_id, curr_id);
+
+		if (arc) {
+			sum_path_dist += (float)(*arc);
+		}
+
+		curr = curr->next;
+	}
+
+	return sum_path_dist;
+}
+
+void Graph_acoPheromoneUpdatePath(Graph* pheromones, Graph* graph, Path* path, float q) {
 	AssertNew(pheromones);
+	AssertNew(graph);
 	AssertNew(path);
 
 	ListIntNode* sentinel = &(path->list->sentinel);
@@ -190,14 +217,21 @@ void Graph_acoPheromoneUpdatePath(Graph* pheromones, Path* path, float q) {
 
 	int last_id = 0, curr_id = curr->value;
 
+	float* arc = NULL;
+
 	curr = curr->next;
 
 	while (curr != sentinel) {
 		last_id = curr_id;
-
 		curr_id = curr->value;
 
-		Graph_setArc(pheromones, last_id, curr_id, (float)(q / path->distance));
+		arc = Graph_getArc(graph, last_id, curr_id);
+
+		if (arc) {
+			Graph_setArc(pheromones, last_id, curr_id, (float)(q / *arc));
+
+			printf("%f - ", q / *arc);
+		}
 
 		curr = curr->next;
 	}
