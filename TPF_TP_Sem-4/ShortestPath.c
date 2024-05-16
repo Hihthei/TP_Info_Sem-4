@@ -202,7 +202,11 @@ void Path_destroy(Path *path)
 {
     if (path == NULL) return;
 
-    ListInt_destroy(path->list);
+    if (!ListInt_isEmpty(path->list))
+        ListInt_destroy(path->list);
+    else
+        free(path->list);
+    
     free(path);
 }
 

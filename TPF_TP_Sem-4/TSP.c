@@ -128,7 +128,7 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 	int next = start;
 	int nextw = -1;
 	float pr = 0;
-	int r;
+	int r = 0;
 	ArcList* tmp=NULL;
 	bool* explored = (bool*)calloc(distances->size, sizeof(bool));
 	AssertNew(explored);

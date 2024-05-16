@@ -33,6 +33,8 @@ void Sous_Graph_destroy(UnderGraph* under_graph) {
 	}
 	free(under_graph->sous_graph);
 	under_graph->sous_graph = NULL;
+
+	free(under_graph);
 }
 
 void Sous_Graph_print(UnderGraph* under_graph) {
