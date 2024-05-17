@@ -23,7 +23,7 @@
 
     //#define FILE_CREATE
 
-    #define FOR_MOODLE
+    //#define FOR_MOODLE
     
     //#define DIJKSTRA_1
 
@@ -31,6 +31,6 @@
 
     //#define TSP_HEURISTIC_3
 
-    //#define TSP_ACO_4
+    #define TSP_ACO_4
 
 #endif
