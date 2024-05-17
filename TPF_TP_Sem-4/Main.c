@@ -1,5 +1,5 @@
 #include "Sous_Graph.h"
-
+#include "Bin_Heap.h"
 void free_graph(Graph** graph) {
     if (*graph) {
         Graph_destroy(*graph);
@@ -111,14 +111,40 @@ int main() {
     AssertNew(graph_matrix);
     
     int* tab_node = (int*)calloc(node_count, sizeof(int));
-
+    AssertNew(tab_node);
     UnderGraph* under_graph = Sous_Graph_create(node_count);
     AssertNew(under_graph);
 
     for (i = 0; i < node_count; i++)
         tmp = fscanf(pfile, "%d", &tab_node[i]);
 
+    Bin_Heap* b = Bin_Heap_create(10);
+    //Bin_Heap_add(b, 0, 10);
+    //Bin_Heap_add(b, 1, 12);
+    //Bin_Heap_add(b, 2, 21);
+    //Bin_Heap_add(b, 3, 250);
+    /*Bin_Heap_add(b, 4, 1);
+    Bin_Heap_add(b, 5, 14);
+    Bin_Heap_add(b, 6, 16);*/
+    //Bin_Heap_print(b);
+    //Bin_Heap_remove(b);
+    //Bin_Heap_print(b);
+  
+    
+    //printf("%d %d\n", tab_node[5], tab_node[0]);
+    //path = Binary_Graph_shortestPath(graph_plan, tab_node[1], tab_node[0]);
+    //Path_print(path);
     for (i = 0; i < node_count; i++) {
+        for (j = 0; j < node_count; j++) {
+            if (i == j)
+                printf("%d %d 0.0\n", i, j);
+            else {
+                path = Binary_Graph_shortestPath(graph_plan, tab_node[i], tab_node[j]);
+                printf("%d %d %.1f\n", i, j, path->distance);
+            }
+        }
+    }
+    /*for (i = 0; i < node_count; i++) {
         for (j = 0; j < node_count; j++) {
             if (i == j)
                 continue;
@@ -130,8 +156,8 @@ int main() {
 
             under_graph->sous_graph[i][j] = path;
         }
-    }
-
+    }*/
+  
     #ifdef FOR_MOODLE
         Graph_printMoodle(graph_matrix);
     #else
@@ -143,10 +169,10 @@ int main() {
     #endif // FOR_MOODLE
 
     //FREE------------------------------------------------------
-    free_graph(&graph_plan);
-    free_graph(&graph_matrix);
+    //free_graph(&graph_plan);
+    //free_graph(&graph_matrix);
 
-    Sous_Graph_destroy(under_graph);
+    //Sous_Graph_destroy(under_graph);
     under_graph = NULL;
 
     path = NULL;
@@ -160,7 +186,7 @@ int main() {
 #endif // PATH_MATRIX_2
 
 #ifdef TSP_HEURISTIC_3
-    pfile = fopen("../TPF_Donnees/3_TSP_Heuristic/input1.txt", "r");
+    pfile = fopen("../TPF_Donnees/3_TSP_Heuristic/input3.txt", "r");
     AssertNew(pfile);
 
     tmp = fscanf(pfile, "%[^\n]\n", path_graph);
@@ -287,7 +313,22 @@ int main() {
     }
 
     //ACO------------------------------------------------------
-    path = Graph_tspFromACO(graph_aco, 0, 10, 100, 1.0f, 1.0f , 0.01f, 4.0f);
+    path = Graph_tspFromACO(graph_aco, 0, 5, 100, 2.f, 2.f , 0.1f, 2.0f);
+    
+    /*Graph* graph_p = Graph_create(graph_aco->size);
+    for (int i = 0; i != graph_aco->size; i++) {
+        for (int j = 0; j != graph_aco->size; j++) {
+            if (i == j) {
+                continue;
+            }
+            else {
+                Graph_setArc(graph_p, i, j, 1);
+            }
+        }
+    }*/
+
+
+    //path = Graph_acoConstructPath(graph_aco, graph_p, 0, 1.f, 1.f);
     Path_print(path);
     
 #ifdef FILE_CREATE_TODO
