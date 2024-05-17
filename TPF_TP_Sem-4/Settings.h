@@ -26,6 +26,8 @@
     //#define FOR_MOODLE
     
     //#define DIJKSTRA_1
+    
+#define SDL
 
     //#define PATH_MATRIX_2
 

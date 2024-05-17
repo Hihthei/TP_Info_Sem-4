@@ -29,13 +29,23 @@ void free_undergraph(UnderGraph** under_graph) {
     }
 }
 
+#ifdef SDL
+
+int main() {
+    printf("proutent\n");
+
+    return 0;
+}
+
+#else
+
 int main() {
     //TIME-CLOCK-INITIALISATION---------------------------------
     clock_t start = 0, middle = 0, end = 0;
     double cpu_time_used = 0;
     start = clock();
     srand((unsigned int)time(NULL));
-  
+
     //----------------------------------------------------------
     FILE* pfile = NULL;
 
@@ -49,7 +59,7 @@ int main() {
     char fileName[256] = "";
 
     int tmp = 0, i = 0, j = 0;
-    
+
 #ifdef DIJKSTRA_1 // tas binaire
     pfile = fopen("../TPF_Donnees/1_Dijkstra/input1.txt", "r");
     AssertNew(pfile);
@@ -66,27 +76,27 @@ int main() {
 
     path = Binary_Graph_shortestPath(graph_plan, tab[0], tab[1]);
 
-    #ifdef FOR_MOODLE
-        printf("%.1f\n", path->distance);
-        printf("%d\n", path->list->nodeCount);
-        ListInt_print(path->list);
+#ifdef FOR_MOODLE
+    printf("%.1f\n", path->distance);
+    printf("%d\n", path->list->nodeCount);
+    ListInt_print(path->list);
 
-    #else
-        Path_print(path);
+#else
+    Path_print(path);
 
-        #ifdef FILE_CREATE
-                //FILE-CREATE-----------------------------------------------
-                strcpy(fileName, "..\\Output_geojson\\Dijkstra.geojson");
-                if (FileFonction_fileExist(fileName))
-                    FileFonction_deleteFile(fileName);
+#ifdef FILE_CREATE
+    //FILE-CREATE-----------------------------------------------
+    strcpy(fileName, "..\\Output_geojson\\Dijkstra.geojson");
+    if (FileFonction_fileExist(fileName))
+        FileFonction_deleteFile(fileName);
 
-                FileFonction_createFile(fileName);
+    FileFonction_createFile(fileName);
 
-                //Print_writeGeoJson(fileName, path, coord_plan);
-                Print_writeGeoJson_Bonus(fileName, path, coord_plan, tab, 2);
+    //Print_writeGeoJson(fileName, path, coord_plan);
+    Print_writeGeoJson_Bonus(fileName, path, coord_plan, tab, 2);
 
-        #endif // FILE_CREATE
-    #endif // FOR_MOODLE
+#endif // FILE_CREATE
+#endif // FOR_MOODLE
 
     //FREE------------------------------------------------------
     free_graph(&graph_plan);
@@ -119,7 +129,7 @@ int main() {
 
     Graph* graph_matrix = Graph_create(node_count);
     AssertNew(graph_matrix);
-    
+
     int* tab_node = (int*)calloc(node_count, sizeof(int));
     AssertNew(tab_node);
     UnderGraph* under_graph = Sous_Graph_create(node_count);
@@ -138,16 +148,16 @@ int main() {
             }
         }
     }
-  
-    #ifdef FOR_MOODLE
-        Graph_printMoodle(graph_matrix);
-    #else
-        //classic_output
-        Graph_print(graph_matrix);
 
-        //full_output
-        Sous_Graph_print(under_graph);
-    #endif // FOR_MOODLE
+#ifdef FOR_MOODLE
+    Graph_printMoodle(graph_matrix);
+#else
+    //classic_output
+    Graph_print(graph_matrix);
+
+    //full_output
+    Sous_Graph_print(under_graph);
+#endif // FOR_MOODLE
 
     //FREE------------------------------------------------------
     free_graph(&graph_plan);
@@ -159,7 +169,7 @@ int main() {
     path = NULL;
 
     free_coord(&coord_plan);
-    
+
     fclose(pfile);
     pfile = NULL;
 
@@ -207,46 +217,46 @@ int main() {
     //HEURISTIC-------------------------------------------------
     path = Graph_tspFromHeuristic(graph_heuristic, 0);
 
-    #ifdef FOR_MOODLE
-        printf("%.1f %d\n", path->distance, path->list->nodeCount);
-        ListInt_print(path->list);
+#ifdef FOR_MOODLE
+    printf("%.1f %d\n", path->distance, path->list->nodeCount);
+    ListInt_print(path->list);
 
-    #else
-        Path_print(path);
+#else
+    Path_print(path);
 
-        #ifdef FILE_CREATE
-            Path* complet_path = NULL;
+#ifdef FILE_CREATE
+    Path* complet_path = NULL;
 
-            if (!ListInt_isEmpty(path->list)) {
-                complet_path = Path_create(tab_node_heuristic[0]);
+    if (!ListInt_isEmpty(path->list)) {
+        complet_path = Path_create(tab_node_heuristic[0]);
 
-                int prev = 0, current = ListInt_popFirst(path->list);
+        int prev = 0, current = ListInt_popFirst(path->list);
 
-                while (!ListInt_isEmpty(path->list)) {
-                    prev = current;
+        while (!ListInt_isEmpty(path->list)) {
+            prev = current;
 
-                    current = ListInt_popFirst(path->list);
+            current = ListInt_popFirst(path->list);
 
-                    ListInt* heuristic_list = under_graph_heuristic->sous_graph[prev][current]->list;
+            ListInt* heuristic_list = under_graph_heuristic->sous_graph[prev][current]->list;
 
-                    if (!ListInt_isEmpty(heuristic_list))
-                        tmp = ListInt_popFirst(heuristic_list);
+            if (!ListInt_isEmpty(heuristic_list))
+                tmp = ListInt_popFirst(heuristic_list);
 
-                    ListInt_concatenate(complet_path->list, heuristic_list);
-                }
-            }
+            ListInt_concatenate(complet_path->list, heuristic_list);
+        }
+    }
 
-            //FILE-CREATE-----------------------------------------------
-            strcpy(fileName, "..\\Output_geojson\\TSP_Heuristic.geojson");
-            if (FileFonction_fileExist(fileName))
-                FileFonction_deleteFile(fileName);
+    //FILE-CREATE-----------------------------------------------
+    strcpy(fileName, "..\\Output_geojson\\TSP_Heuristic.geojson");
+    if (FileFonction_fileExist(fileName))
+        FileFonction_deleteFile(fileName);
 
-            FileFonction_createFile(fileName);
+    FileFonction_createFile(fileName);
 
-            Print_writeGeoJson_Bonus(fileName, complet_path, coord_plan, tab_node_heuristic, node_count_heuristic);
-        
-        #endif // FILE_CREATE
-    #endif // FOR_MOODLE
+    Print_writeGeoJson_Bonus(fileName, complet_path, coord_plan, tab_node_heuristic, node_count_heuristic);
+
+#endif // FILE_CREATE
+#endif // FOR_MOODLE
 
     //FREE------------------------------------------------------
     free_graph(&graph_plan);
@@ -264,7 +274,7 @@ int main() {
 #endif // TSP_HEURISTIC
 
 #ifdef TSP_ACO_4
-    pfile = fopen("../TPF_Donnees/4_TSP_ACO/input4.txt", "r");
+    pfile = fopen("../TPF_Donnees/4_TSP_ACO/input1.txt", "r");
     AssertNew(pfile);
 
     tmp = fscanf(pfile, "%[^\n]\n", path_graph);
@@ -302,49 +312,10 @@ int main() {
     }
 
     //ACO------------------------------------------------------
-    path = Graph_tspFromACO(graph_aco, 0, 1000, 100, 2.f, 3.f , 0.1f, 2.0f);
-    
-    
-
-    /* Path* pa = Path_create(0);
-    Graph* grrr = Graph_create(4);
-
-    Graph_setArc(grrr, 0, 1, 1);
-    Graph_setArc(grrr, 0, 2, 2);
-    Graph_setArc(grrr, 0, 3, 8);
-
-    Graph_setArc(grrr, 1, 0, 1);
-    Graph_setArc(grrr, 1, 3, 2);
-
-    Graph_setArc(grrr, 2, 0, 2);
-    Graph_setArc(grrr, 2, 3, 2);
-
-    Graph_print(grrr);
-    //Graph_acoPheromoneGlobalUpdate(phem, 0.05f);
-    ListInt_insertLast(pa->list, 1);
-    ListInt_insertLast(pa->list, 3);
-    pa->distance = 3;
-    Path_print(pa);
-    Graph_acoPheromoneUpdatePath(phem, grrr, pa, 2.0f);
-    Graph_print(phem);*/
-
-    /*Graph* graph_p = Graph_create(graph_aco->size);
-    for (int i = 0; i != graph_aco->size; i++) {
-        for (int j = 0; j != graph_aco->size; j++) {
-            if (i == j) {
-                continue;
-            }
-            else {
-                Graph_setArc(graph_p, i, j, 1);
-            }
-        }
-    }*/
-
-
-    //path = Graph_acoConstructPath(graph_aco, graph_p, 0, 1.f, 1.f);
+    path = Graph_tspFromACO(graph_aco, 0, 1000, 100, 2.f, 3.f, 0.1f, 2.0f);
     Path_print(path);
-    
-#ifdef FILE_CREATE_TODO
+
+#ifdef FILE_CREATE
     Path* complet_path_aco = NULL;
 
     if (!ListInt_isEmpty(path->list)) {
@@ -354,7 +325,7 @@ int main() {
 
         while (!ListInt_isEmpty(path->list)) {
             prev = current;
-            
+
             current = ListInt_popFirst(path->list);
 
             ListInt* aco_list = under_graph_aco->sous_graph[prev][current]->list;
@@ -367,7 +338,7 @@ int main() {
     }
 
     //FILE-CREATE-----------------------------------------------
-    char* fileName = "..\\Output_geojson\\TSP_Aco.geojson";
+    strcpy(fileName, "..\\Output_geojson\\TSP_Aco.geojson");
     if (FileFonction_fileExist(fileName))
         FileFonction_deleteFile(fileName);
 
@@ -400,3 +371,8 @@ int main() {
     //----------------------------------------------------------
     return EXIT_SUCCESS;
 }
+
+#endif // SDL
+
+
+
