@@ -23,7 +23,7 @@
 
     #define FILE_CREATE
 
-    #define FOR_MOODLE
+    //#define FOR_MOODLE
     
     #define DIJKSTRA_1
 

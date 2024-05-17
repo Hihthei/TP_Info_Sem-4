@@ -140,9 +140,8 @@ float* Graph_acoGetProbabilities(Graph* graph, Graph* pheromones, int station,
 
 
 Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
-	int start, float a, float b) {
+								int start, float a, float b) {
 
-	srand((unsigned int)time(NULL));
 	int prev = start;
 	Path* T = Path_create(start);
 	int next = start;
@@ -177,7 +176,8 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 
 		next = Generate_Random(proba, prev);
 		//printf("next %d\n", next);
-		
+		while (next == prev)
+			next = Generate_Random(proba, prev);
 		
 		float* tmpw = Graph_getArc(distances, prev, next);
 		nextw = (float)*tmpw;
@@ -219,6 +219,7 @@ void Graph_acoPheromoneUpdatePath(Graph* pheromones, Graph* graph, Path* path, f
 	int last_id = 0, curr_id = curr->value;
 
 	float* arc = NULL;
+	float* arc_bis = NULL;
 
 	curr = curr->next;
 
@@ -226,10 +227,12 @@ void Graph_acoPheromoneUpdatePath(Graph* pheromones, Graph* graph, Path* path, f
 		last_id = curr_id;
 		curr_id = curr->value;
 
+		arc_bis = Graph_getArc(pheromones, last_id, curr_id);
+
 		arc = Graph_getArc(graph, last_id, curr_id);
 
-		if (arc) {
-			Graph_setArc(pheromones, last_id, curr_id, (float)(q / *arc));
+		if (arc && arc_bis) {
+			Graph_setArc(pheromones, last_id, curr_id, *arc_bis + (float)(q / *arc));
 		}
 
 		curr = curr->next;

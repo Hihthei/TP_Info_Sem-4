@@ -1,5 +1,6 @@
 #include "Sous_Graph.h"
 #include "Bin_Heap.h"
+
 void free_graph(Graph** graph) {
     if (*graph) {
         Graph_destroy(*graph);
@@ -33,7 +34,8 @@ int main() {
     clock_t start = 0, middle = 0, end = 0;
     double cpu_time_used = 0;
     start = clock();
-
+    srand((unsigned int)time(NULL));
+    
     //----------------------------------------------------------
     FILE* pfile = NULL;
 
@@ -64,19 +66,27 @@ int main() {
 
     path = Binary_Graph_shortestPath(graph_plan, tab[0], tab[1]);
 
-    //Path_print(path);
+    #ifdef FOR_MOODLE
+        printf("%.1f\n", path->distance);
+        printf("%d\n", path->list->nodeCount);
+        ListInt_print(path->list);
 
-    #ifdef FILE_CREATE
-        //FILE-CREATE-----------------------------------------------
-        strcpy(fileName, "..\\Output_geojson\\Dijkstra.geojson");
-        if (FileFonction_fileExist(fileName))
-            FileFonction_deleteFile(fileName);
+    #else
+        Path_print(path);
 
-        FileFonction_createFile(fileName);
+        #ifdef FILE_CREATE
+                //FILE-CREATE-----------------------------------------------
+                strcpy(fileName, "..\\Output_geojson\\Dijkstra.geojson");
+                if (FileFonction_fileExist(fileName))
+                    FileFonction_deleteFile(fileName);
 
-        //Print_writeGeoJson(fileName, path, coord_plan);
-        Print_writeGeoJson_Bonus(fileName, path, coord_plan, tab, 2);
-    #endif // FILE_CREATE
+                FileFonction_createFile(fileName);
+
+                //Print_writeGeoJson(fileName, path, coord_plan);
+                Print_writeGeoJson_Bonus(fileName, path, coord_plan, tab, 2);
+
+        #endif // FILE_CREATE
+    #endif // FOR_MOODLE
 
     //FREE------------------------------------------------------
     free_graph(&graph_plan);
@@ -196,39 +206,47 @@ int main() {
 
     //HEURISTIC-------------------------------------------------
     path = Graph_tspFromHeuristic(graph_heuristic, 0);
-    Path_print(path);
 
-    #ifdef FILE_CREATE
-        Path* complet_path = NULL;
-        
-        if (!ListInt_isEmpty(path->list)) {
-            complet_path = Path_create(tab_node_heuristic[0]);
+    #ifdef FOR_MOODLE
+        printf("%.1f %d\n", path->distance, path->list->nodeCount);
+        ListInt_print(path->list);
 
-            int prev = 0, current = ListInt_popFirst(path->list);
+    #else
+        Path_print(path);
 
-            while (!ListInt_isEmpty(path->list)) {
-                prev = current;
+        #ifdef FILE_CREATE
+            Path* complet_path = NULL;
 
-                current = ListInt_popFirst(path->list);
-                
-                ListInt* heuristic_list = under_graph_heuristic->sous_graph[prev][current]->list;
+            if (!ListInt_isEmpty(path->list)) {
+                complet_path = Path_create(tab_node_heuristic[0]);
 
-                if (!ListInt_isEmpty(heuristic_list))
-                    tmp = ListInt_popFirst(heuristic_list);
+                int prev = 0, current = ListInt_popFirst(path->list);
 
-                ListInt_concatenate(complet_path->list, heuristic_list);
+                while (!ListInt_isEmpty(path->list)) {
+                    prev = current;
+
+                    current = ListInt_popFirst(path->list);
+
+                    ListInt* heuristic_list = under_graph_heuristic->sous_graph[prev][current]->list;
+
+                    if (!ListInt_isEmpty(heuristic_list))
+                        tmp = ListInt_popFirst(heuristic_list);
+
+                    ListInt_concatenate(complet_path->list, heuristic_list);
+                }
             }
-        }
-  
-        //FILE-CREATE-----------------------------------------------
-        strcpy(fileName, "..\\Output_geojson\\TSP_Heuristic.geojson");
-        if (FileFonction_fileExist(fileName))
-            FileFonction_deleteFile(fileName);
-        
-        FileFonction_createFile(fileName);
 
-        Print_writeGeoJson_Bonus(fileName, complet_path, coord_plan, tab_node_heuristic, node_count_heuristic);
-    #endif // FILE_CREATE
+            //FILE-CREATE-----------------------------------------------
+            strcpy(fileName, "..\\Output_geojson\\TSP_Heuristic.geojson");
+            if (FileFonction_fileExist(fileName))
+                FileFonction_deleteFile(fileName);
+
+            FileFonction_createFile(fileName);
+
+            Print_writeGeoJson_Bonus(fileName, complet_path, coord_plan, tab_node_heuristic, node_count_heuristic);
+        
+        #endif // FILE_CREATE
+    #endif // FOR_MOODLE
 
     //FREE------------------------------------------------------
     free_graph(&graph_plan);
