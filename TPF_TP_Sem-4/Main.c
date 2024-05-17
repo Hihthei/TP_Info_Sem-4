@@ -1,5 +1,6 @@
 #include "Sous_Graph.h"
 #include "Bin_Heap.h"
+
 void free_graph(Graph** graph) {
     if (*graph) {
         Graph_destroy(*graph);
@@ -34,6 +35,7 @@ int main() {
     double cpu_time_used = 0;
     start = clock();
     srand((unsigned int)time(NULL));
+  
     //----------------------------------------------------------
     FILE* pfile = NULL;
 
@@ -64,19 +66,27 @@ int main() {
 
     path = Binary_Graph_shortestPath(graph_plan, tab[0], tab[1]);
 
-    //Path_print(path);
+    #ifdef FOR_MOODLE
+        printf("%.1f\n", path->distance);
+        printf("%d\n", path->list->nodeCount);
+        ListInt_print(path->list);
 
-    #ifdef FILE_CREATE
-        //FILE-CREATE-----------------------------------------------
-        strcpy(fileName, "..\\Output_geojson\\Dijkstra.geojson");
-        if (FileFonction_fileExist(fileName))
-            FileFonction_deleteFile(fileName);
+    #else
+        Path_print(path);
 
-        FileFonction_createFile(fileName);
+        #ifdef FILE_CREATE
+                //FILE-CREATE-----------------------------------------------
+                strcpy(fileName, "..\\Output_geojson\\Dijkstra.geojson");
+                if (FileFonction_fileExist(fileName))
+                    FileFonction_deleteFile(fileName);
 
-        //Print_writeGeoJson(fileName, path, coord_plan);
-        Print_writeGeoJson_Bonus(fileName, path, coord_plan, tab, 2);
-    #endif // FILE_CREATE
+                FileFonction_createFile(fileName);
+
+                //Print_writeGeoJson(fileName, path, coord_plan);
+                Print_writeGeoJson_Bonus(fileName, path, coord_plan, tab, 2);
+
+        #endif // FILE_CREATE
+    #endif // FOR_MOODLE
 
     //FREE------------------------------------------------------
     free_graph(&graph_plan);
@@ -118,22 +128,6 @@ int main() {
     for (i = 0; i < node_count; i++)
         tmp = fscanf(pfile, "%d", &tab_node[i]);
 
-    Bin_Heap* b = Bin_Heap_create(10);
-    //Bin_Heap_add(b, 0, 10);
-    //Bin_Heap_add(b, 1, 12);
-    //Bin_Heap_add(b, 2, 21);
-    //Bin_Heap_add(b, 3, 250);
-    /*Bin_Heap_add(b, 4, 1);
-    Bin_Heap_add(b, 5, 14);
-    Bin_Heap_add(b, 6, 16);*/
-    //Bin_Heap_print(b);
-    //Bin_Heap_remove(b);
-    //Bin_Heap_print(b);
-  
-    
-    //printf("%d %d\n", tab_node[5], tab_node[0]);
-    //path = Binary_Graph_shortestPath(graph_plan, tab_node[1], tab_node[0]);
-    //Path_print(path);
     for (i = 0; i < node_count; i++) {
         for (j = 0; j < node_count; j++) {
             if (i == j)
@@ -144,19 +138,6 @@ int main() {
             }
         }
     }
-    /*for (i = 0; i < node_count; i++) {
-        for (j = 0; j < node_count; j++) {
-            if (i == j)
-                continue;
-
-            path = Binary_Graph_shortestPath(graph_plan, tab_node[i], tab_node[j]);
-
-            if (Graph_getArc(graph_matrix, i, j) == NULL && path != NULL)
-                Graph_setArc(graph_matrix, i, j, path->distance);
-
-            under_graph->sous_graph[i][j] = path;
-        }
-    }*/
   
     #ifdef FOR_MOODLE
         Graph_printMoodle(graph_matrix);
@@ -165,14 +146,14 @@ int main() {
         Graph_print(graph_matrix);
 
         //full_output
-        //Sous_Graph_print(under_graph);
+        Sous_Graph_print(under_graph);
     #endif // FOR_MOODLE
 
     //FREE------------------------------------------------------
-    //free_graph(&graph_plan);
-    //free_graph(&graph_matrix);
+    free_graph(&graph_plan);
+    free_graph(&graph_matrix);
 
-    //Sous_Graph_destroy(under_graph);
+    Sous_Graph_destroy(under_graph);
     under_graph = NULL;
 
     path = NULL;
@@ -186,7 +167,7 @@ int main() {
 #endif // PATH_MATRIX_2
 
 #ifdef TSP_HEURISTIC_3
-    pfile = fopen("../TPF_Donnees/3_TSP_Heuristic/input3.txt", "r");
+    pfile = fopen("../TPF_Donnees/3_TSP_Heuristic/input1.txt", "r");
     AssertNew(pfile);
 
     tmp = fscanf(pfile, "%[^\n]\n", path_graph);
@@ -225,39 +206,47 @@ int main() {
 
     //HEURISTIC-------------------------------------------------
     path = Graph_tspFromHeuristic(graph_heuristic, 0);
-    Path_print(path);
 
-    #ifdef FILE_CREATE
-        Path* complet_path = NULL;
-        
-        if (!ListInt_isEmpty(path->list)) {
-            complet_path = Path_create(tab_node_heuristic[0]);
+    #ifdef FOR_MOODLE
+        printf("%.1f %d\n", path->distance, path->list->nodeCount);
+        ListInt_print(path->list);
 
-            int prev = 0, current = ListInt_popFirst(path->list);
+    #else
+        Path_print(path);
 
-            while (!ListInt_isEmpty(path->list)) {
-                prev = current;
+        #ifdef FILE_CREATE
+            Path* complet_path = NULL;
 
-                current = ListInt_popFirst(path->list);
-                
-                ListInt* heuristic_list = under_graph_heuristic->sous_graph[prev][current]->list;
+            if (!ListInt_isEmpty(path->list)) {
+                complet_path = Path_create(tab_node_heuristic[0]);
 
-                if (!ListInt_isEmpty(heuristic_list))
-                    tmp = ListInt_popFirst(heuristic_list);
+                int prev = 0, current = ListInt_popFirst(path->list);
 
-                ListInt_concatenate(complet_path->list, heuristic_list);
+                while (!ListInt_isEmpty(path->list)) {
+                    prev = current;
+
+                    current = ListInt_popFirst(path->list);
+
+                    ListInt* heuristic_list = under_graph_heuristic->sous_graph[prev][current]->list;
+
+                    if (!ListInt_isEmpty(heuristic_list))
+                        tmp = ListInt_popFirst(heuristic_list);
+
+                    ListInt_concatenate(complet_path->list, heuristic_list);
+                }
             }
-        }
-  
-        //FILE-CREATE-----------------------------------------------
-        strcpy(fileName, "..\\Output_geojson\\TSP_Heuristic.geojson");
-        if (FileFonction_fileExist(fileName))
-            FileFonction_deleteFile(fileName);
-        
-        FileFonction_createFile(fileName);
 
-        Print_writeGeoJson_Bonus(fileName, complet_path, coord_plan, tab_node_heuristic, node_count_heuristic);
-    #endif // FILE_CREATE
+            //FILE-CREATE-----------------------------------------------
+            strcpy(fileName, "..\\Output_geojson\\TSP_Heuristic.geojson");
+            if (FileFonction_fileExist(fileName))
+                FileFonction_deleteFile(fileName);
+
+            FileFonction_createFile(fileName);
+
+            Print_writeGeoJson_Bonus(fileName, complet_path, coord_plan, tab_node_heuristic, node_count_heuristic);
+        
+        #endif // FILE_CREATE
+    #endif // FOR_MOODLE
 
     //FREE------------------------------------------------------
     free_graph(&graph_plan);
@@ -313,7 +302,6 @@ int main() {
     }
 
     //ACO------------------------------------------------------
-
     path = Graph_tspFromACO(graph_aco, 0, 1000, 100, 1.f, 1.f , 0.1f, 2.0f);
     
     /*Graph* phem = Graph_create(4);
