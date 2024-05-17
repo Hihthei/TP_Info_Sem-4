@@ -153,6 +153,7 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 	ArcList* tmp=NULL;
 	bool* explored = (bool*)calloc(distances->size, sizeof(bool));
 	AssertNew(explored);
+
 	explored[0] = true;
 	float* prob = (float*)calloc(distances->size, sizeof(float));
 	AssertNew(prob);
@@ -178,7 +179,7 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 
 		next = Generate_Random(proba, prev);
 		//printf("next %d\n", next);
-		while (next == prev)
+		while (next == prev || explored[next])
 			next = Generate_Random(proba, prev);
 		
 		float* tmpw = Graph_getArc(distances, prev, next);
