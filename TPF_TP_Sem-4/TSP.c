@@ -61,7 +61,7 @@ Path* Graph_tspFromACO(	Graph* graph, int station, int iterationCount, int antCo
 			Tj[j] = Graph_acoConstructPath(graph, phem, station, alpha, beta);
 			if (ListInt_isEmpty(T->list) || T->distance > Tj[j]->distance) {
 				T->distance = Tj[j]->distance;
-				T->list = ListInt_copy(Tj[j]);
+				T->list = ListInt_copy(Tj[j]->list);
 				printf("%f ", T->distance);
 			}
 		}
@@ -189,14 +189,11 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 		T->distance += nextw;
     
 		//ListInt_print(T->list);
+
+		Graph_destroy(proba);
 	}
 	
 	float* last = Graph_getArc(distances, next, start);
-
-		Graph_destroy(graph_proba);
-	}
-	
-	float *last = Graph_getArc(distances, prev, start);
 
 	float tmpc = *last;
 	ListInt_insertLast(T->list, start);
