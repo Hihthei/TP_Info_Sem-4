@@ -44,6 +44,8 @@ int main() {
     Coord* coord_plan = NULL;
     Path* path = NULL;
 
+    char fileName[256] = "";
+
     int tmp = 0, i = 0, j = 0;
     
 #ifdef DIJKSTRA_1 // tas binaire
@@ -62,11 +64,11 @@ int main() {
 
     path = Binary_Graph_shortestPath(graph_plan, tab[0], tab[1]);
 
-    Path_print(path);
+    //Path_print(path);
 
     #ifdef FILE_CREATE
         //FILE-CREATE-----------------------------------------------
-        char* fileName = "..\\Output_geojson\\Dijkstra.geojson";
+        strcpy(fileName, "..\\Output_geojson\\Dijkstra.geojson");
         if (FileFonction_fileExist(fileName))
             FileFonction_deleteFile(fileName);
 
@@ -88,7 +90,10 @@ int main() {
 #endif // DIJKSTRA_1
 
 #ifdef PATH_MATRIX_2
-    pfile = fopen("../TPF_Donnees/2_Path_matrix/input3.txt", "r");
+    pfile = fopen("../TPF_Donnees/2_Path_matrix/input1.txt", "r");
+    if (!pfile)
+        pfile = stdin;
+
     AssertNew(pfile);
 
     tmp = fscanf(pfile, "%[^\n]\n", path_graph);
@@ -103,10 +108,12 @@ int main() {
     coord_plan = Print_createTab(path_inter);
 
     Graph* graph_matrix = Graph_create(node_count);
-
+    AssertNew(graph_matrix);
+    
     int* tab_node = (int*)calloc(node_count, sizeof(int));
     AssertNew(tab_node);
     UnderGraph* under_graph = Sous_Graph_create(node_count);
+    AssertNew(under_graph);
 
     for (i = 0; i < node_count; i++)
         tmp = fscanf(pfile, "%d", &tab_node[i]);
@@ -150,12 +157,16 @@ int main() {
             under_graph->sous_graph[i][j] = path;
         }
     }*/
+  
+    #ifdef FOR_MOODLE
+        Graph_printMoodle(graph_matrix);
+    #else
+        //classic_output
+        Graph_print(graph_matrix);
 
-    //classic_output
-    //Graph_print(graph_matrix);
-    
-    //full_output
-    //Sous_Graph_print(under_graph);
+        //full_output
+        //Sous_Graph_print(under_graph);
+    #endif // FOR_MOODLE
 
     //FREE------------------------------------------------------
     //free_graph(&graph_plan);
@@ -164,9 +175,9 @@ int main() {
     //Sous_Graph_destroy(under_graph);
     under_graph = NULL;
 
-    free_coord(&coord_plan);
+    path = NULL;
 
-    free_path(&path);
+    free_coord(&coord_plan);
     
     fclose(pfile);
     pfile = NULL;
@@ -239,13 +250,13 @@ int main() {
         }
   
         //FILE-CREATE-----------------------------------------------
-        char* fileName = "..\\Output_geojson\\TSP_Heuristic.geojson";
+        strcpy(fileName, "..\\Output_geojson\\TSP_Heuristic.geojson");
         if (FileFonction_fileExist(fileName))
             FileFonction_deleteFile(fileName);
-
+        
         FileFonction_createFile(fileName);
 
-        Print_writeGeoJson(fileName, complet_path, coord_plan);
+        Print_writeGeoJson_Bonus(fileName, complet_path, coord_plan, tab_node_heuristic, node_count_heuristic);
     #endif // FILE_CREATE
 
     //FREE------------------------------------------------------
@@ -320,7 +331,7 @@ int main() {
     //path = Graph_acoConstructPath(graph_aco, graph_p, 0, 1.f, 1.f);
     Path_print(path);
     
-#ifdef FILE_CREATE
+#ifdef FILE_CREATE_TODO
     Path* complet_path_aco = NULL;
 
     if (!ListInt_isEmpty(path->list)) {

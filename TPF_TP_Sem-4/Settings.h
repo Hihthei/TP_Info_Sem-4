@@ -23,9 +23,11 @@
 
     //#define FILE_CREATE
 
+    #define FOR_MOODLE
+    
     //#define DIJKSTRA_1
 
-    #define PATH_MATRIX_2
+    //#define PATH_MATRIX_2
 
     //#define TSP_HEURISTIC_3
 

@@ -131,7 +131,3 @@ void Bin_Heap_destroy(Bin_Heap *heap) {
 	free(heap->bin_tab);
 	free(heap);
 }
-
-
-
-

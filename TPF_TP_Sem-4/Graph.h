@@ -59,6 +59,10 @@
     /// @param graph Le graphe 
     void Graph_print(Graph *graph);
 
+    /// @brief Affiche le graphe pour un format moodle.
+    /// @param graph Le graphe 
+    void Graph_printMoodle(Graph* graph);
+
     /// @brief Renvoie le nombre de noeuds d'un graphe.
     /// @param graph le graphe.
     /// @return Le nombre de noeuds du graphe.

@@ -1,7 +1,6 @@
 #include "TSP.h"
 #include "Sous_Graph.h"
 
-
 int Generate_Random(Graph* graph, int nodeact) {
 
 	float somme = 0;
@@ -28,7 +27,6 @@ int Generate_Random(Graph* graph, int nodeact) {
 
 Path* Graph_tspFromACO(	Graph* graph, int station, int iterationCount, int antCount,
 						float alpha, float beta, float rho, float q) {
-
 	Path* T = Path_create(station);
 	int tmp = ListInt_popFirst(T->list);
 
@@ -69,14 +67,13 @@ Path* Graph_tspFromACO(	Graph* graph, int station, int iterationCount, int antCo
 		}
 		Graph_acoPheromoneGlobalUpdate(phem, rho);
 		for (int j = 0; j != antCount; j++) {
-			Graph_acoPheromoneUpdatePath(phem, Tj[j], q);
+			Graph_acoPheromoneUpdatePath(phem, graph, Tj[j], q);
 		}
 	}
 	return T;
 }
 
-Path* Graph_tspFromHeuristic(Graph* graph, int station){
-
+Path* Graph_tspFromHeuristic(Graph* graph, int station) {
 	int prev = station;
 	Path* T = Path_create(station);
 	int next = -1;
@@ -155,7 +152,7 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 	int next = start;
 	float nextw = -1;
 	float pr = 0;
-	
+  
 	ArcList* tmp=NULL;
 	bool* explored = (bool*)calloc(distances->size, sizeof(bool));
 	AssertNew(explored);
@@ -165,6 +162,7 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 	
 	for (int i = 0; i != distances->size-1; i++) {
 		prev = next;
+    
 		explored[prev] = true;
 		prob = Graph_acoGetProbabilities(distances, pheros, prev, explored, a, b);
 
@@ -189,10 +187,17 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 		nextw = (float)*tmpw;
 		ListInt_insertLast(T->list, next);
 		T->distance += nextw;
+    
 		//ListInt_print(T->list);
 	}
 	
 	float* last = Graph_getArc(distances, next, start);
+
+		Graph_destroy(graph_proba);
+	}
+	
+	float *last = Graph_getArc(distances, prev, start);
+
 	float tmpc = *last;
 	ListInt_insertLast(T->list, start);
 	T->distance += tmpc;
@@ -210,8 +215,35 @@ void Graph_acoPheromoneGlobalUpdate(Graph* pheromones, float rho) {
 	}
 }
 
-void Graph_acoPheromoneUpdatePath(Graph* pheromones, Path* path, float q) {
+float Sum_path_dist(Path* path, Graph* graph) {
+	ListIntNode* sentinel = &(path->list->sentinel);
+	ListIntNode* curr = sentinel->next;
+
+	int last_id = 0, curr_id = curr->value;
+
+	float sum_path_dist = 0.0f;
+
+	curr = curr->next;
+
+	while (curr != sentinel) {
+		last_id = curr_id;
+		curr_id = curr->value;
+
+		float* arc = Graph_getArc(graph, last_id, curr_id);
+
+		if (arc) {
+			sum_path_dist += (float)(*arc);
+		}
+
+		curr = curr->next;
+	}
+
+	return sum_path_dist;
+}
+
+void Graph_acoPheromoneUpdatePath(Graph* pheromones, Graph* graph, Path* path, float q) {
 	AssertNew(pheromones);
+	AssertNew(graph);
 	AssertNew(path);
 
 	ListIntNode* sentinel = &(path->list->sentinel);
@@ -219,14 +251,21 @@ void Graph_acoPheromoneUpdatePath(Graph* pheromones, Path* path, float q) {
 
 	int last_id = 0, curr_id = curr->value;
 
+	float* arc = NULL;
+
 	curr = curr->next;
 
 	while (curr != sentinel) {
 		last_id = curr_id;
-
 		curr_id = curr->value;
 
-		Graph_setArc(pheromones, last_id, curr_id, (float)(q / path->distance));
+		arc = Graph_getArc(graph, last_id, curr_id);
+
+		if (arc) {
+			Graph_setArc(pheromones, last_id, curr_id, (float)(q / *arc));
+
+			printf("%f - ", q / *arc);
+		}
 
 		curr = curr->next;
 	}

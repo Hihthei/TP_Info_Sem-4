@@ -56,6 +56,6 @@
     /// @param pheromones le graphe des phéromones.
     /// @param path la tournée de la fourmi.
     /// @param q un réel positif qui contôle la quantité de phéromones déposées par la fourmi.
-    void Graph_acoPheromoneUpdatePath(Graph* pheromones, Path* path, float q);
+    void Graph_acoPheromoneUpdatePath(Graph* pheromones, Graph* graph, Path* path, float q);
 
 #endif

@@ -210,7 +210,11 @@ void Path_destroy(Path *path)
 {
     if (path == NULL) return;
 
-    ListInt_destroy(path->list);
+    if (!ListInt_isEmpty(path->list))
+        ListInt_destroy(path->list);
+    else
+        free(path->list);
+    
     free(path);
 }
 
@@ -222,6 +226,6 @@ void Path_print(Path *path)
         return;
     }
 
-    printf("path (distance = %f) : ", path->distance);
+    printf("path (distance = %.1f) : ", path->distance);
     ListInt_print(path->list);
 }

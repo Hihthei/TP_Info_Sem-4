@@ -187,3 +187,24 @@ void Graph_print(Graph *graph)
         printf("\n");
     }
 }
+
+void Graph_printMoodle(Graph* graph)
+{
+    assert(graph);
+
+    int size = graph->size;
+    for (int currID = 0; currID < size; currID++) {
+        for (int i = 0; i < size; i++) {
+            if (currID == i) {
+                printf("%d %d 0.0\n", currID, i);
+                continue;
+            }
+
+            float* tmp = Graph_getArc(graph, currID, i);
+            
+            if (tmp) {
+                printf("%d %d %.1f\n", currID, i, *tmp);
+            }
+        }
+    }
+}
