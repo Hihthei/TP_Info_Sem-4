@@ -35,7 +35,7 @@ int main() {
     double cpu_time_used = 0;
     start = clock();
     srand((unsigned int)time(NULL));
-    
+  
     //----------------------------------------------------------
     FILE* pfile = NULL;
 
@@ -302,8 +302,39 @@ int main() {
     }
 
     //ACO------------------------------------------------------
-    path = Graph_tspFromACO(graph_aco, 0, 1000, 100, 2.f, 3.f , 0.1f, 2.0f);
+    path = Graph_tspFromACO(graph_aco, 0, 1000, 100, 1.f, 1.f , 0.1f, 2.0f);
     
+    /*Graph* phem = Graph_create(4);
+    for (int u = 0; u != phem->size; u++) {
+        for (int v = 0; v != phem->size; v++) {
+            if (u != v) {
+                Graph_setArc(phem, u, v, 1.f);
+            }
+        }
+    }*/
+
+    /* Path* pa = Path_create(0);
+    Graph* grrr = Graph_create(4);
+
+    Graph_setArc(grrr, 0, 1, 1);
+    Graph_setArc(grrr, 0, 2, 2);
+    Graph_setArc(grrr, 0, 3, 8);
+
+    Graph_setArc(grrr, 1, 0, 1);
+    Graph_setArc(grrr, 1, 3, 2);
+
+    Graph_setArc(grrr, 2, 0, 2);
+    Graph_setArc(grrr, 2, 3, 2);
+
+    Graph_print(grrr);
+    //Graph_acoPheromoneGlobalUpdate(phem, 0.05f);
+    ListInt_insertLast(pa->list, 1);
+    ListInt_insertLast(pa->list, 3);
+    pa->distance = 3;
+    Path_print(pa);
+    Graph_acoPheromoneUpdatePath(phem, grrr, pa, 2.0f);
+    Graph_print(phem);*/
+
     /*Graph* graph_p = Graph_create(graph_aco->size);
     for (int i = 0; i != graph_aco->size; i++) {
         for (int j = 0; j != graph_aco->size; j++) {
