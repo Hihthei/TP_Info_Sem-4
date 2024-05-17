@@ -2,25 +2,41 @@
 #include "Sous_Graph.h"
 
 int Generate_Random(Graph* graph, int nodeact) {
-	float somme = 0;
-	float value = (float)(rand() % (100 + 1)) / 100;
-	
-	ArcList* tmpold= NULL;
 	ArcList* tmp = graph->nodeList[nodeact].arcList;
 
-	while (somme < value && tmp->next) {
-		somme += tmp->weight;
-		tmpold = tmp;
-		tmp = tmp->next;
+	// Vérification de la liste d'arcs pour le nœud actuel
+	if (!tmp) {
+		return -1;  // Aucun arc disponible
 	}
-	while (tmp->next && tmp->weight==0.f ) {
-		tmp = tmp->next;
+
+	// Calculer la somme totale des poids
+	float total_weight = 0;
+	ArcList* iter = tmp;
+	while (iter) {
+		total_weight += iter->weight;
+		iter = iter->next;
 	}
-	if (tmp->weight==0) {
-		if (tmpold) {
-			tmp = tmpold;
+
+	// Gérer le cas où tous les poids sont nuls
+	if (total_weight == 0) {
+		return tmp->target;  // Retourner n'importe quel arc, ici le premier
+	}
+
+	// Générer une valeur aléatoire entre 0 et total_weight
+	float random_value = ((float)rand() / RAND_MAX) * total_weight;
+
+	// Sélectionner l'arc basé sur la valeur aléatoire
+	float cumulative_weight = 0;
+	iter = tmp;
+	while (iter) {
+		cumulative_weight += iter->weight;
+		if (cumulative_weight >= random_value) {
+			return iter->target;
 		}
+		iter = iter->next;
 	}
+
+	// Par défaut, retourner le dernier nœud cible, même si cela ne devrait pas arriver
 	return tmp->target;
 }
 
@@ -65,7 +81,7 @@ Path* Graph_tspFromACO(	Graph* graph, int station, int iterationCount, int antCo
 		}
 		Graph_acoPheromoneGlobalUpdate(phem, rho);
 		for (int j = 0; j != antCount; j++) {
-			Graph_acoPheromoneUpdatePath(phem, graph, Tj[j], q);
+			Graph_acoPheromoneUpdatePath(phem, Tj[j], q);
 		}
 	}
 	return T;
@@ -120,15 +136,14 @@ float* Graph_acoGetProbabilities(Graph* graph, Graph* pheromones, int station,
 		}
 		else {
 			float* dist = Graph_getArc(graph, station, arclist->target);
-			float distc = *dist;
-			probabilities[arclist->target] = powf(arclist->weight, alpha) * powf(1 / (distc), beta);
+			
+			probabilities[arclist->target] = powf(arclist->weight, alpha) * powf(1 / (*dist), beta);
 			tmp = pheromones->nodeList[station].arcList;
 			diviseur = 0;
 			while (tmp) {
 				if (!explored[tmp->target]) {
 					float* tmpdist = Graph_getArc(graph, station, tmp->target);
-					float tmpdistc = *tmpdist;
-					diviseur += (float)(pow(tmp->weight, alpha) * pow(1 / tmpdistc, beta));
+					diviseur += (float)(powf(tmp->weight, alpha) * powf(1 / *tmpdist, beta));
 				}
 				tmp = tmp->next;
 			}
@@ -154,7 +169,6 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 	bool* explored = (bool*)calloc(distances->size, sizeof(bool));
 	AssertNew(explored);
 
-	explored[0] = true;
 	float* prob = (float*)calloc(distances->size, sizeof(float));
 	AssertNew(prob);
 	
@@ -166,6 +180,7 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 
 		Graph* proba = Graph_create(pheros->size);
 		for (int i = 0; i != pheros->size;i++) {
+			if(!explored[i])
 				Graph_setArc(proba, prev, i, prob[i]);	
 		}
 		/*
@@ -179,22 +194,22 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 
 		next = Generate_Random(proba, prev);
 		//printf("next %d\n", next);
-		while (next == prev || explored[next])
+		while (next == prev)
+			printf("inside");
 			next = Generate_Random(proba, prev);
 		
-		float* tmpw = Graph_getArc(distances, prev, next);
-		nextw = (float)*tmpw;
+		float* nextw = Graph_getArc(distances, prev, next);
+		
 		ListInt_insertLast(T->list, next);
-		T->distance += nextw;
+		T->distance += *nextw;
     
 		Graph_destroy(proba);
 	}
 	
 	float* last = Graph_getArc(distances, next, start);
-	float tmpc = *last;
-  
+	
 	ListInt_insertLast(T->list, start);
-	T->distance += tmpc;
+	T->distance += *last;
 	return T;
 }
 
@@ -209,12 +224,12 @@ void Graph_acoPheromoneGlobalUpdate(Graph* pheromones, float rho) {
 	}
 }
 
-void Graph_acoPheromoneUpdatePath(Graph* pheromones, Graph* graph, Path* path, float q){
+void Graph_acoPheromoneUpdatePath(Graph* pheromones, Path* path, float q){
 	ArcList* arc;
 	for (int i = 0; i != pheromones->size; i++) {
 		arc = pheromones->nodeList[i].arcList;
 		while (arc) {
-			arc->weight = arc->weight + (float)(q / path->distance);
+			arc->weight = arc->weight + (q / path->distance);
 			arc = arc->next;
 		}
 	}
