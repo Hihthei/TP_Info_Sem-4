@@ -2,7 +2,6 @@
 #include "Sous_Graph.h"
 
 int Generate_Random(Graph* graph, int nodeact) {
-
 	float somme = 0;
 	float value = (float)(rand() % (100 + 1)) / 100;
 	
@@ -190,7 +189,7 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 	}
 	
 	float* last = Graph_getArc(distances, next, start);
-
+  
 	float tmpc = *last;
 	ListInt_insertLast(T->list, start);
 	T->distance += tmpc;
