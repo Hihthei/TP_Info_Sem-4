@@ -126,19 +126,25 @@ void Binary_Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, 
   
     //Bin_Heap_print(heap);
   
-    for (int n = 0; n < graph->size; n++)
+    for(int i =0;i!=graph->size;i++)
+    //while(true)
     {
         // Recherche le noeud de distance minimale
 
-        int currID = (int)heap->tab[0][0];
-        float currDist = heap->tab[0][1];
-
+        int currID = heap->bin_tab[0]->index;
+        float currDist = heap->bin_tab[0]->distance;
+        //Bin_Heap_print(heap);
+        //printf("remove %d\n",currID);
         Bin_Heap_remove(heap);
         while (explored[currID]) {
-            currID = (int)heap->tab[0][0];
-            currDist = heap->tab[0][1];
+            //printf("Already get\n");
+            currID = heap->bin_tab[0]->index;
+            currDist = heap->bin_tab[0]->distance;
+            currID = heap->bin_tab[0]->index;
+            currDist = heap->bin_tab[0]->distance;
             Bin_Heap_remove(heap);
         }
+        //Bin_Heap_print(heap);
         // Condition d'arret
         if (currID < 0 || currID == end)
             break;
@@ -155,8 +161,10 @@ void Binary_Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, 
                 distances[nextID] = dist;
                 predecessors[nextID] = currID;
                 Bin_Heap_add(heap, nextID, dist);   
+                //printf("insert %.1f\n", dist);
             }
         }
+        //Bin_Heap_print(heap);
     }
     free(explored);
     Bin_Heap_destroy(heap);
@@ -202,7 +210,11 @@ void Path_destroy(Path *path)
 {
     if (path == NULL) return;
 
-    ListInt_destroy(path->list);
+    if (!ListInt_isEmpty(path->list))
+        ListInt_destroy(path->list);
+    else
+        free(path->list);
+    
     free(path);
 }
 
@@ -214,6 +226,6 @@ void Path_print(Path *path)
         return;
     }
 
-    printf("path (distance = %f) : ", path->distance);
+    printf("path (distance = %.1f) : ", path->distance);
     ListInt_print(path->list);
 }
