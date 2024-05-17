@@ -264,7 +264,7 @@ int main() {
 #endif // TSP_HEURISTIC
 
 #ifdef TSP_ACO_4
-    pfile = fopen("../TPF_Donnees/4_TSP_ACO/input1.txt", "r");
+    pfile = fopen("../TPF_Donnees/4_TSP_ACO/input4.txt", "r");
     AssertNew(pfile);
 
     tmp = fscanf(pfile, "%[^\n]\n", path_graph);
@@ -302,16 +302,9 @@ int main() {
     }
 
     //ACO------------------------------------------------------
-    path = Graph_tspFromACO(graph_aco, 0, 1000, 100, 1.f, 1.f , 0.1f, 2.0f);
+    path = Graph_tspFromACO(graph_aco, 0, 1000, 100, 2.f, 3.f , 0.1f, 2.0f);
     
-    /*Graph* phem = Graph_create(4);
-    for (int u = 0; u != phem->size; u++) {
-        for (int v = 0; v != phem->size; v++) {
-            if (u != v) {
-                Graph_setArc(phem, u, v, 1.f);
-            }
-        }
-    }*/
+    
 
     /* Path* pa = Path_create(0);
     Graph* grrr = Graph_create(4);
