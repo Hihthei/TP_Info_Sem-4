@@ -19,14 +19,15 @@ ListInt *ListInt_create()
 void ListInt_destroy(ListInt *list)
 {
     if (list == NULL) return;
-
-    ListIntNode *sentinel = &(list->sentinel);
-    ListIntNode *curr = sentinel->next;
-    while (curr != sentinel)
-    {
-        ListIntNode *next = curr->next;
-        free(curr);
-        curr = next;
+    if (!ListInt_isEmpty(list)) {
+        ListIntNode* sentinel = &(list->sentinel);
+        ListIntNode* curr = sentinel->next;
+        while (curr != sentinel)
+        {
+            ListIntNode* next = curr->next;
+            free(curr);
+            curr = next;
+        }
     }
     free(list);
 }
