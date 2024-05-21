@@ -21,5 +21,6 @@ void Bin_Heap_add(Bin_Heap* heap, int index, float value);
 void Bin_Heap_remove(Bin_Heap* heap);
 void Bin_Heap_print(Bin_Heap* heap);
 void Bin_Heap_destroy(Bin_Heap* heap);
+bool Bin_Heap_contains(Bin_Heap* heap, int index);
 
 #endif

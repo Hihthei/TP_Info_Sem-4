@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AStar.c" />
     <ClCompile Include="FileFonction.c" />
     <ClCompile Include="Graph.c" />
     <ClCompile Include="ListInt.c" />
@@ -138,6 +139,7 @@
     <ClCompile Include="TSP.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AStar.h" />
     <ClInclude Include="FileFonction.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="ListInt.h" />

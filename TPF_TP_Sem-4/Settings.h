@@ -25,12 +25,14 @@
 
     //#define FOR_MOODLE
     
-    //#define DIJKSTRA_1
+    #define DIJKSTRA_1
 
     //#define PATH_MATRIX_2
 
     //#define TSP_HEURISTIC_3
 
-    #define TSP_ACO_4
+    //#define TSP_ACO_4
+
+    #define ASTAR
 
 #endif
