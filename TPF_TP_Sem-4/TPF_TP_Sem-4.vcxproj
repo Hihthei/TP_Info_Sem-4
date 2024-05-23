@@ -132,6 +132,7 @@
     <ClCompile Include="ListInt.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="Print_GeoJson.c" />
+    <ClCompile Include="SDL.c" />
     <ClCompile Include="ShortestPath.c" />
     <ClCompile Include="Bin_Heap.c" />
     <ClCompile Include="Sous_Graph.c" />
@@ -142,6 +143,7 @@
     <ClInclude Include="Graph.h" />
     <ClInclude Include="ListInt.h" />
     <ClInclude Include="Print_GeoJson.h" />
+    <ClInclude Include="SDL.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="ShortestPath.h" />
     <ClInclude Include="Bin_Heap.h" />
