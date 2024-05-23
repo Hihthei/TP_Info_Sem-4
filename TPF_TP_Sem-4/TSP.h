@@ -26,6 +26,8 @@
         Graph* graph, int station, int iterationCount, int antCount,
         float alpha, float beta, float rho, float q);
 
+    Path* Graph_tspFromACO_Bonus(Graph* graph, Graph* phem, int station, int iterationCount, int antCount,
+        float alpha, float beta, float rho, float q);
     /// @brief Depuis un sommet, calcule les probabilités de passer aux sommets suivants.
     /// @param graph le graphe des distances. Il doit être complet.
     /// @param pheromones le graphe des phéromones.
@@ -57,5 +59,7 @@
     /// @param path la tournée de la fourmi.
     /// @param q un réel positif qui contôle la quantité de phéromones déposées par la fourmi.
     void Graph_acoPheromoneUpdatePath(Graph* pheromones, Path* path, float q);
+
+    Path* Local_Opti(Graph* graph, Path* path);
 
 #endif

@@ -63,20 +63,13 @@ Path* Graph_tspFromACO(	Graph* graph, int station, int iterationCount, int antCo
 	}
 	for (int i = 0; i != iterationCount; i++) {
 		for (int j = 0; j != antCount; j++) {
-			/*ArcList* tmp = Graph_getArcList(phem, station);
-			while (tmp) {
-				printf("%.2f ",tmp->weight);
-				tmp = tmp->next;
-			}
-			printf("\n");*/
-			//Graph_print(phem);
-			//printf("\n");
+			
 
 			Tj[j] = Graph_acoConstructPath(graph, phem, station, alpha, beta);
 			if (ListInt_isEmpty(T->list) || T->distance > Tj[j]->distance) {
 				T->distance = Tj[j]->distance;
 				T->list = ListInt_copy(Tj[j]->list);
-				printf("%f ", T->distance);
+				printf("iteration = %d fourmi = %d distance = %f\n", i,j, T->distance);
 			}
 		}
 		Graph_acoPheromoneGlobalUpdate(phem, rho);
@@ -86,6 +79,42 @@ Path* Graph_tspFromACO(	Graph* graph, int station, int iterationCount, int antCo
 	}
 	return T;
 }
+
+
+Path* Graph_tspFromACO_Bonus(Graph* graph, Graph *phem ,int station, int iterationCount, int antCount,
+	float alpha, float beta, float rho, float q) {
+	Path* T = Path_create(station);
+	int tmp = ListInt_popFirst(T->list);
+
+	Path** Tj = (Path**)calloc(antCount, sizeof(Path*));
+	AssertNew(Tj);
+	for (int ant = 0; ant != antCount; ant++) {
+		
+		Tj[ant] = Path_create(station);
+		tmp = ListInt_popFirst(Tj[ant]->list);
+	}
+
+	//Création du graph pheromones
+	
+	for (int i = 0; i != iterationCount; i++) {
+		for (int j = 0; j != antCount; j++) {
+			
+			Tj[j] = Graph_acoConstructPath(graph, phem, station, alpha, beta);
+			if (ListInt_isEmpty(T->list) || T->distance > Tj[j]->distance) {
+				T->distance = Tj[j]->distance;
+				T->list = ListInt_copy(Tj[j]->list);
+				printf("iteration = %d fourmi = %d distance = %f\n", i, j, T->distance);
+			}
+		}
+		Graph_acoPheromoneGlobalUpdate(phem, rho);
+		for (int j = 0; j != antCount; j++) {
+			Graph_acoPheromoneUpdatePath(phem, Tj[j], q);
+		}
+	}
+	return T;
+}
+
+
 
 Path* Graph_tspFromHeuristic(Graph* graph, int station) {
 	int prev = station;
@@ -156,6 +185,7 @@ float* Graph_acoGetProbabilities(Graph* graph, Graph* pheromones, int station,
 
 
 
+
 Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 								int start, float a, float b) {
 
@@ -183,14 +213,7 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 			if(!explored[i])
 				Graph_setArc(proba, prev, i, prob[i]);	
 		}
-		/*
-		tmp = Graph_getArcList(proba, prev);
-		while (tmp) {
-			printf("%.2f ", prob[tmp->target]);
-			tmp = tmp->next;
-		}
-		printf("\n");*/
-		//Graph_print(proba);
+		
 
 		next = Generate_Random(proba, prev);
 		//printf("next %d\n", next);
@@ -213,6 +236,10 @@ Path* Graph_acoConstructPath(Graph* distances, Graph* pheros,
 	return T;
 }
 
+
+
+
+
 void Graph_acoPheromoneGlobalUpdate(Graph* pheromones, float rho) {
 	ArcList* arc;
 	for (int i = 0; i != pheromones->size; i++) {
@@ -224,6 +251,7 @@ void Graph_acoPheromoneGlobalUpdate(Graph* pheromones, float rho) {
 	}
 }
 
+
 void Graph_acoPheromoneUpdatePath(Graph* pheromones, Path* path, float q){
 	ArcList* arc;
 	for (int i = 0; i != pheromones->size; i++) {
@@ -233,4 +261,92 @@ void Graph_acoPheromoneUpdatePath(Graph* pheromones, Path* path, float q){
 			arc = arc->next;
 		}
 	}
+}
+
+
+
+
+Path* Local_Opti(Graph *graph, Path *path){
+	int* tab_id = (int*)calloc(graph->size + 1 , sizeof(int));
+	AssertNew(tab_id);
+	ListIntNode *tmp = &path->list->sentinel;
+	tmp = tmp->next;
+	for (int i = 0; i != path->list->nodeCount; i++) {
+		tab_id[i] = tmp->value;
+ 		tmp = tmp->next;
+	}
+
+	int s = 0;
+	float min = -1;
+	float tmpa = 0;
+	float* v;
+	int* tab_res = (int*)calloc(8, sizeof(int));
+	AssertNew(tab_res);
+	
+	for (int n = 0; n+7 < graph->size  ;n+=7) {
+		min = -1;
+		
+		for (int n0 = s; n0 != s + 7; n0++) {
+			if (tab_id[n0] != tab_id[s]) {
+				for (int n1 = s; n1 != s + 7; n1++) {
+					if (tab_id[n1] != tab_id[n0] && tab_id[n1] != tab_id[s]) {
+						for (int n2 = s; n2 != s + 7; n2++) {
+							if (tab_id[n2] != tab_id[n1] && tab_id[n2] != tab_id[n0] && tab_id[n2] != tab_id[s]) {
+								for (int n3 = s; n3 != s + 7; n3++) {
+									if (tab_id[n3] != tab_id[n2] && tab_id[n3] != tab_id[n1] && tab_id[n3] != tab_id[n0] && tab_id[n3] != tab_id[s]) {
+										for (int n4 = s; n4 != s + 7; n4++) {
+											if (tab_id[n4] != tab_id[n3] && tab_id[n4] != tab_id[n2] && tab_id[n4] != tab_id[n1] && tab_id[n4] != tab_id[n0] && tab_id[n4] != tab_id[s]) {
+												for (int n5 = s; n5 != s + 7; n5++) {
+													if (tab_id[n5] != tab_id[n4] && tab_id[n5] != tab_id[n3] && tab_id[n5] != tab_id[n2] && tab_id[n5] != tab_id[n1] && tab_id[n5] != tab_id[n0] && tab_id[n5] != tab_id[s]) {
+														v = Graph_getArc(graph, tab_id[s], tab_id[n0]);
+														tmpa = *v;
+														v = Graph_getArc(graph, tab_id[n0], tab_id[n1]);
+														tmpa += *v;
+														v = Graph_getArc(graph, tab_id[n1], tab_id[n2]);
+														tmpa += *v;
+														v = Graph_getArc(graph, tab_id[n2], tab_id[n3]);
+														tmpa += *v;
+														v = Graph_getArc(graph, tab_id[n3], tab_id[n4]);
+														tmpa += *v;
+														v = Graph_getArc(graph, tab_id[n4], tab_id[n5]);
+														tmpa += *v;
+														v = Graph_getArc(graph, tab_id[n5], tab_id[s + 7]);
+														tmpa += *v;
+														if (min == -1 || min > tmpa) {
+															min = tmpa;
+															tab_res[0] = tab_id[s];
+															tab_res[1] = tab_id[n0];
+															tab_res[2] = tab_id[n1];
+															tab_res[3] = tab_id[n2];
+															tab_res[4] = tab_id[n3];
+															tab_res[5] = tab_id[n4];
+															tab_res[6] = tab_id[n5];
+															tab_res[7] = tab_id[s + 7];
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		for (int i = 0 ; i != 7; i++) {
+			tab_id[s + i] = tab_res[i];
+		}
+		s += 7;
+	}
+	
+	Path* path_res = Path_create(tab_id[0]);
+	float* w;
+	for (int i = 1; i != graph->size +1; i++) {
+		ListInt_insertLast(path_res->list, tab_id[i]);
+		w = Graph_getArc(graph, tab_id[i - 1], tab_id[i]);
+		path_res->distance += *w;
+	}
+	return path_res;
 }

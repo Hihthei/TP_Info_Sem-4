@@ -21,18 +21,20 @@
     INLINE int minInt(int a, int b) { return a < b ? a : b; }
     INLINE int maxInt(int a, int b) { return a > b ? a : b; }
 
-    #define FILE_CREATE
+    //#define FILE_CREATE
 
     //#define FOR_MOODLE
     
     //#define DIJKSTRA_1
     
-#define SDL
 
     //#define PATH_MATRIX_2
+       //#define PATH_MATRIX_SAVE
 
     //#define TSP_HEURISTIC_3
 
-    #define TSP_ACO_4
+    //#define TSP_ACO_4
+
+    #define TSP_ACO_BONUS
 
 #endif
