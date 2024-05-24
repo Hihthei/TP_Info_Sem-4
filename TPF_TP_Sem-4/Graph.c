@@ -138,7 +138,6 @@ float *Graph_getArc(Graph *graph, int u, int v)
     return NULL;
 }
 
-
 Graph *Graph_load(char *filename)
 {
     FILE *file = fopen(filename, "r");
@@ -169,6 +168,18 @@ Graph *Graph_load(char *filename)
     fclose(file);
 
     return graph;
+}
+
+int Graph_get_Arc_Count(Graph* graph) {
+    AssertNew(graph);
+
+    int somme = 0;
+
+    for (int i = 0; i < graph->size; i++) {
+        somme += graph->nodeList[i].arcCount;
+    }
+
+    return somme;
 }
 
 void Graph_print(Graph *graph)

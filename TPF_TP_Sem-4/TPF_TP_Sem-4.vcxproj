@@ -116,7 +116,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -133,6 +133,7 @@
     <ClCompile Include="ListInt.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="Print_GeoJson.c" />
+    <ClCompile Include="SDL.c" />
     <ClCompile Include="ShortestPath.c" />
     <ClCompile Include="Bin_Heap.c" />
     <ClCompile Include="Sous_Graph.c" />
@@ -144,6 +145,7 @@
     <ClInclude Include="Graph.h" />
     <ClInclude Include="ListInt.h" />
     <ClInclude Include="Print_GeoJson.h" />
+    <ClInclude Include="SDL.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="ShortestPath.h" />
     <ClInclude Include="Bin_Heap.h" />

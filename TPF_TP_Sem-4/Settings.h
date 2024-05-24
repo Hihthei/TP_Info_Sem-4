@@ -27,12 +27,33 @@
     
     #define DIJKSTRA_1
 
-    //#define PATH_MATRIX_2
+    #define PATH_MATRIX_2
 
-    //#define TSP_HEURISTIC_3
+        #ifdef PATH_MATRIX_2
+            
+            #define LOAD_MATRIX // charger une matrice de chemin pré-sauvegardée
+            #define PATH_MATRIX_SAVE
+
+        #endif // PATH_MATRIX_2
+
+    #define TSP_HEURISTIC_3
 
     //#define TSP_ACO_4
 
     #define ASTAR
+
+        #ifdef TSP_ACO_4
+
+            //#define TSP_ACO_GI //Grande Instance -> france
+
+        #endif // TSP_ACO_4
+
+    #define TSP_ACO_BONUS
+
+        #ifdef TSP_ACO_BONUS
+
+            #define BONUS_ALL_START
+
+        #endif // TSP_ACO_BONUS
 
 #endif

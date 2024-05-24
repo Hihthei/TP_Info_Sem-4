@@ -35,9 +35,10 @@ int main() {
     double cpu_time_used = 0;
     start = clock();
     srand((unsigned int)time(NULL));
-  
+
     //----------------------------------------------------------
     FILE* pfile = NULL;
+    FILE* file_save = NULL;
 
     char path_graph[128] = "";
     char path_inter[128] = "";
@@ -49,32 +50,39 @@ int main() {
     char fileName[256] = "";
 
     int tmp = 0, i = 0, j = 0;
-    
-#ifdef DIJKSTRA_1 // tas binaire
-    pfile = fopen("../TPF_Donnees/1_Dijkstra/input1.txt", "r");
-    AssertNew(pfile);
 
-    tmp = fscanf(pfile, "%[^\n]\n", path_graph);
-    tmp = fscanf(pfile, "%[^\n]\n", path_inter);
+    #ifdef DIJKSTRA_1 // tas binaire
 
-    int tab[2] = { 0 };
-    tmp = fscanf(pfile, "%d %d", &tab[0], &tab[1]);
+        pfile = fopen("../TPF_Donnees/1_Dijkstra/input1.txt", "r");
+        if (!pfile)
+            pfile = stdin;
 
-    //GRAPH-----------------------------------------------------
-    graph_plan = Graph_load(path_graph);
-    coord_plan = Print_createTab(path_inter);
+        AssertNew(pfile);
 
-    path = Binary_Graph_shortestPath(graph_plan, tab[0], tab[1]);
+        tmp = fscanf(pfile, "%[^\n]\n", path_graph);
+        tmp = fscanf(pfile, "%[^\n]\n", path_inter);
 
-    #ifdef FOR_MOODLE
-        printf("%.1f\n", path->distance);
-        printf("%d\n", path->list->nodeCount);
-        ListInt_print(path->list);
+        int tab[2] = { 0 };
+        tmp = fscanf(pfile, "%d %d", &tab[0], &tab[1]);
 
-    #else
-        Path_print(path);
+        //GRAPH-----------------------------------------------------
+        graph_plan = Graph_load(path_graph);
+        coord_plan = Print_createTab(path_inter);
 
-        #ifdef FILE_CREATE
+        path = Binary_Graph_shortestPath(graph_plan, tab[0], tab[1]);
+
+        #ifdef FOR_MOODLE
+
+            printf("%.1f\n", path->distance);
+            printf("%d\n", path->list->nodeCount);
+            ListInt_print(path->list);
+
+        #else
+
+            Path_print(path);
+
+            #ifdef FILE_CREATE
+
                 //FILE-CREATE-----------------------------------------------
                 strcpy(fileName, "..\\Output_geojson\\Dijkstra.geojson");
                 if (FileFonction_fileExist(fileName))
@@ -85,140 +93,320 @@ int main() {
                 //Print_writeGeoJson(fileName, path, coord_plan);
                 Print_writeGeoJson_Bonus(fileName, path, coord_plan, tab, 2);
 
-        #endif // FILE_CREATE
-    #endif // FOR_MOODLE
+            #endif // FILE_CREATE
+        #endif // FOR_MOODLE
 
-    //FREE------------------------------------------------------
-    free_graph(&graph_plan);
+        //FREE------------------------------------------------------
+        free_graph(&graph_plan);
 
-    free_coord(&coord_plan);
+        free_coord(&coord_plan);
 
-    free_path(&path);
+        free_path(&path);
 
-    fclose(pfile);
-    pfile = NULL;
-#endif // DIJKSTRA_1
+        fclose(pfile);
+        pfile = NULL;
 
-#ifdef PATH_MATRIX_2
-    pfile = fopen("../TPF_Donnees/2_Path_matrix/input1.txt", "r");
-    if (!pfile)
-        pfile = stdin;
+    #endif // DIJKSTRA_1
 
-    AssertNew(pfile);
+    #ifdef PATH_MATRIX_2
 
-    tmp = fscanf(pfile, "%[^\n]\n", path_graph);
-    tmp = fscanf(pfile, "%[^\n]\n", path_inter);
+        pfile = fopen("../TPF_Donnees/2_Path_matrix/input1.txt", "r");
+        if (!pfile)
+            pfile = stdin;
 
-    int node_count = 0;
+        AssertNew(pfile);
 
-    tmp = fscanf(pfile, "%d\n", &node_count);
+        tmp = fscanf(pfile, "%[^\n]\n", path_graph);
+        tmp = fscanf(pfile, "%[^\n]\n", path_inter);
 
-    //GRAPH-----------------------------------------------------
-    graph_plan = Graph_load(path_graph);
-    coord_plan = Print_createTab(path_inter);
+        int node_count = 0;
 
-    Graph* graph_matrix = Graph_create(node_count);
-    AssertNew(graph_matrix);
+        tmp = fscanf(pfile, "%d\n", &node_count);
+
+        //GRAPH-----------------------------------------------------
+        graph_plan = Graph_load(path_graph);
+        coord_plan = Print_createTab(path_inter);
+
+        Graph* graph_matrix = Graph_create(node_count);
+        AssertNew(graph_matrix)
+
+        int* tab_node = (int*)calloc(node_count, sizeof(int));
+        AssertNew(tab_node);
+
+        UnderGraph* under_graph = Sous_Graph_create(node_count);
+        AssertNew(under_graph);
+
+        for (i = 0; i < node_count; i++)
+            tmp = fscanf(pfile, "%d", &tab_node[i]);
+
+        #ifdef LOAD_MATRIX
+
+            graph_matrix = Graph_load("../TPF_Donnees/2_Path_matrix/save_1.txt");
+            under_graph = Sous_Graph_load("../TPF_Donnees/2_Path_matrix/sous_graph_1.txt");
+
+        #else
+
+            for (i = 0; i < node_count; i++) {
+                for (j = 0; j < node_count; j++) {
+                    if (i == j)
+                        continue;
     
-    int* tab_node = (int*)calloc(node_count, sizeof(int));
-    AssertNew(tab_node);
-    UnderGraph* under_graph = Sous_Graph_create(node_count);
-    AssertNew(under_graph);
+                    path = Binary_Graph_shortestPath(graph_plan, tab_node[i], tab_node[j]);
+                    
+                    if (Graph_getArc(graph_matrix, i, j) == NULL && path != NULL)
+                        Graph_setArc(graph_matrix, i, j, path->distance);
+    
+                    under_graph->sous_graph[i][j] = path;
+                }
+            }
 
-    for (i = 0; i < node_count; i++)
-        tmp = fscanf(pfile, "%d", &tab_node[i]);
+        #endif // LOAD_MATRIX
 
-    for (i = 0; i < node_count; i++) {
-        for (j = 0; j < node_count; j++) {
-            if (i == j)
-                printf("%d %d 0.0\n", i, j);
-            else {
-                path = Binary_Graph_shortestPath(graph_plan, tab_node[i], tab_node[j]);
-                printf("%d %d %.1f\n", i, j, path->distance);
+        #ifdef PATH_MATRIX_SAVE // SAVE LA MATRICE ET SOUS GRAPH
+
+            //FILE-CREATE-----------------------------------------------
+            strcpy(fileName, "../TPF_Donnees/2_Path_matrix/save_4.txt");
+            if (FileFonction_fileExist(fileName))
+                FileFonction_deleteFile(fileName);
+
+            FileFonction_createFile(fileName);
+
+            file_save = fopen(fileName, "w");
+            AssertNew(file_save);
+
+            fprintf(file_save, "%d %d\n", node_count, node_count * node_count);
+
+            //FILE-CREATE-----------------------------------------------
+            char fileName_undergraph[256] = "";
+
+            strcpy(fileName_undergraph, "../TPF_Donnees/2_Path_matrix/sous_graph_4.txt");
+            if (FileFonction_fileExist(fileName_undergraph))
+                FileFonction_deleteFile(fileName_undergraph);
+
+            FileFonction_createFile(fileName_undergraph);
+
+            FILE* file_save_undergraph = fopen(fileName_undergraph, "w");
+            AssertNew(file_save_undergraph);
+
+            fprintf(file_save_undergraph, "%d %d\n", node_count, node_count * node_count);
+
+            //FILE-SAVE-------------------------------------------------
+            for (i = 0; i < node_count; i++) {
+                for (j = 0; j < node_count; j++) {
+                    path = Binary_Graph_shortestPath(graph_plan, tab_node[i], tab_node[j]);
+                    if (i == j) {
+                        fprintf(file_save, "%d %d 0.0\n", i, j);
+                        fprintf(file_save_undergraph, "%d %d 0.0\n", i, j);
+                    }
+                    else {
+                        fprintf(file_save, "%d %d %f\n", i, j, path->distance);
+                        fprintf(file_save_undergraph, "%d %d %.1f ", i, j, path->distance);
+                        Sous_Graph_save_path(file_save_undergraph, path);
+                    }
+                }
+            }
+
+        #endif // PATH_MATRIX_SAVE
+
+        #ifdef FOR_MOODLE
+
+            Graph_printMoodle(graph_matrix);
+
+        #else
+
+            //classic_output
+            Graph_print(graph_matrix);
+
+            //full_output
+            Sous_Graph_print(under_graph);
+
+        #endif // FOR_MOODLE
+
+        //FREE------------------------------------------------------
+        free_graph(&graph_plan);
+        free_graph(&graph_matrix);
+
+        Sous_Graph_destroy(under_graph);
+        under_graph = NULL;
+
+        path = NULL;
+
+        free_coord(&coord_plan);
+
+        fclose(pfile);
+        pfile = NULL;
+
+        free(tab_node);
+
+    #endif // PATH_MATRIX_2
+
+    #ifdef TSP_HEURISTIC_3
+
+        pfile = fopen("../TPF_Donnees/3_TSP_Heuristic/input1.txt", "r");
+        if (!pfile)
+            pfile = stdin;
+        
+        AssertNew(pfile);
+
+        tmp = fscanf(pfile, "%[^\n]\n", path_graph);
+        tmp = fscanf(pfile, "%[^\n]\n", path_inter);
+
+        int node_count_heuristic = 0;
+
+        tmp = fscanf(pfile, "%d\n", &node_count_heuristic);
+
+        //GRAPH-----------------------------------------------------
+        graph_plan = Graph_load(path_graph);
+        coord_plan = Print_createTab(path_inter);
+
+        Graph* graph_heuristic = Graph_create(node_count_heuristic);
+
+        UnderGraph* under_graph_heuristic = Sous_Graph_create(node_count_heuristic);
+
+        int* tab_node_heuristic = (int*)calloc(node_count_heuristic, sizeof(int));
+
+        for (i = 0; i < node_count_heuristic; i++)
+            tmp = fscanf(pfile, "%d", &tab_node_heuristic[i]);
+
+        for (i = 0; i < node_count_heuristic; i++) {
+            for (j = 0; j < node_count_heuristic; j++) {
+                if (i == j)
+                    continue;
+
+                path = Binary_Graph_shortestPath(graph_plan, tab_node_heuristic[i], tab_node_heuristic[j]);
+
+                if (Graph_getArc(graph_heuristic, i, j) == NULL && path != NULL)
+                    Graph_setArc(graph_heuristic, i, j, path->distance);
+
+                under_graph_heuristic->sous_graph[i][j] = path;
             }
         }
-    }
-  
-    #ifdef FOR_MOODLE
-        Graph_printMoodle(graph_matrix);
-    #else
-        //classic_output
-        Graph_print(graph_matrix);
 
-        //full_output
-        Sous_Graph_print(under_graph);
-    #endif // FOR_MOODLE
+        //HEURISTIC-------------------------------------------------
+        path = Graph_tspFromHeuristic(graph_heuristic, 0);
 
-    //FREE------------------------------------------------------
-    free_graph(&graph_plan);
-    free_graph(&graph_matrix);
+        #ifdef FOR_MOODLE
 
-    Sous_Graph_destroy(under_graph);
-    under_graph = NULL;
+            printf("%.1f %d\n", path->distance, path->list->nodeCount);
+            ListInt_print(path->list);
 
-    path = NULL;
+        #else
 
-    free_coord(&coord_plan);
-    
-    fclose(pfile);
-    pfile = NULL;
+            Path_print(path);
 
-    free(tab_node);
-#endif // PATH_MATRIX_2
+            #ifdef FILE_CREATE
 
-#ifdef TSP_HEURISTIC_3
-    pfile = fopen("../TPF_Donnees/3_TSP_Heuristic/input1.txt", "r");
-    AssertNew(pfile);
+                Path* complet_path = NULL;
 
-    tmp = fscanf(pfile, "%[^\n]\n", path_graph);
-    tmp = fscanf(pfile, "%[^\n]\n", path_inter);
+                if (!ListInt_isEmpty(path->list)) {
+                    complet_path = Path_create(tab_node_heuristic[0]);
 
-    int node_count_heuristic = 0;
+                    int prev = 0, current = ListInt_popFirst(path->list);
 
-    tmp = fscanf(pfile, "%d\n", &node_count_heuristic);
+                    while (!ListInt_isEmpty(path->list)) {
+                        prev = current;
 
-    //GRAPH-----------------------------------------------------
-    graph_plan = Graph_load(path_graph);
-    coord_plan = Print_createTab(path_inter);
+                        current = ListInt_popFirst(path->list);
 
-    Graph* graph_heuristic = Graph_create(node_count_heuristic);
+                        ListInt* heuristic_list = under_graph_heuristic->sous_graph[prev][current]->list;
 
-    UnderGraph* under_graph_heuristic = Sous_Graph_create(node_count_heuristic);
+                        if (!ListInt_isEmpty(heuristic_list))
+                            tmp = ListInt_popFirst(heuristic_list);
 
-    int* tab_node_heuristic = (int*)calloc(node_count_heuristic, sizeof(int));
+                        ListInt_concatenate(complet_path->list, heuristic_list);
+                    }
+                }
 
-    for (i = 0; i < node_count_heuristic; i++)
-        tmp = fscanf(pfile, "%d", &tab_node_heuristic[i]);
+                //FILE-CREATE-----------------------------------------------
+                strcpy(fileName, "..\\Output_geojson\\TSP_Heuristic.geojson");
+                if (FileFonction_fileExist(fileName))
+                    FileFonction_deleteFile(fileName);
 
-    for (i = 0; i < node_count_heuristic; i++) {
-        for (j = 0; j < node_count_heuristic; j++) {
-            if (i == j)
-                continue;
+                FileFonction_createFile(fileName);
 
-            path = Binary_Graph_shortestPath(graph_plan, tab_node_heuristic[i], tab_node_heuristic[j]);
+                Print_writeGeoJson_Bonus(fileName, complet_path, coord_plan, tab_node_heuristic, node_count_heuristic);
 
-            if (Graph_getArc(graph_heuristic, i, j) == NULL && path != NULL)
-                Graph_setArc(graph_heuristic, i, j, path->distance);
+                free_path(&complet_path);
 
-            under_graph_heuristic->sous_graph[i][j] = path;
+            #endif // FILE_CREATE
+        #endif // FOR_MOODLE
+
+        //FREE------------------------------------------------------
+        free_graph(&graph_plan);
+        free_graph(&graph_heuristic);
+
+        free_coord(&coord_plan);
+
+        free_path(&path);
+
+        fclose(pfile);
+        pfile = NULL;
+
+        free(tab_node_heuristic);
+    #endif // TSP_HEURISTIC
+
+    #ifdef TSP_ACO_4
+
+        #ifdef TSP_ACO_GI
+
+            pfile = fopen("../TPF_Donnees/5_Grande_instance/input.txt", "r");
+
+        #else
+
+            pfile = fopen("../TPF_Donnees/4_TSP_ACO/input1.txt", "r");
+
+        #endif //TSP_ACO_GI
+
+        if (!pfile)
+            pfile = stdin;
+
+        AssertNew(pfile);
+
+        tmp = fscanf(pfile, "%[^\n]\n", path_graph);
+        tmp = fscanf(pfile, "%[^\n]\n", path_inter);
+
+        int node_count_aco = 0;
+
+        tmp = fscanf(pfile, "%d\n", &node_count_aco);
+
+        //GRAPH-----------------------------------------------------
+        graph_plan = Graph_load(path_graph);
+        coord_plan = Print_createTab(path_inter);
+
+        Graph* graph_aco = Graph_create(node_count_aco);
+
+        UnderGraph* under_graph_aco = Sous_Graph_create(node_count_aco);
+        
+        int* tab_node_aco = (int*)calloc(node_count_aco, sizeof(int));
+        
+        for (i = 0; i < node_count_aco; i++)
+            tmp = fscanf(pfile, "%d", &tab_node_aco[i]);
+
+        for (i = 0; i < node_count_aco; i++) {
+            for (j = 0; j < node_count_aco; j++) {
+                if (i == j)
+                    continue;
+
+                path = Binary_Graph_shortestPath(graph_plan, tab_node_aco[i], tab_node_aco[j]);
+
+                if (Graph_getArc(graph_aco, i, j) == NULL && path != NULL)
+                    Graph_setArc(graph_aco, i, j, path->distance);
+
+                under_graph_aco->sous_graph[i][j] = path;
+            }
         }
-    }
 
-    //HEURISTIC-------------------------------------------------
-    path = Graph_tspFromHeuristic(graph_heuristic, 0);
+        //ACO------------------------------------------------------
+        path = Graph_tspFromACO(graph_aco, 0, 1000, 100, 2.f, 3.f, 0.1f, 2.0f);
 
-    #ifdef FOR_MOODLE
-        printf("%.1f %d\n", path->distance, path->list->nodeCount);
-        ListInt_print(path->list);
-
-    #else
         Path_print(path);
 
         #ifdef FILE_CREATE
-            Path* complet_path = NULL;
+
+            Path* complet_path_aco = NULL;
 
             if (!ListInt_isEmpty(path->list)) {
-                complet_path = Path_create(tab_node_heuristic[0]);
+                complet_path_aco = Path_create(tab_node_aco[0]);
 
                 int prev = 0, current = ListInt_popFirst(path->list);
 
@@ -227,169 +415,199 @@ int main() {
 
                     current = ListInt_popFirst(path->list);
 
-                    ListInt* heuristic_list = under_graph_heuristic->sous_graph[prev][current]->list;
+                    ListInt* aco_list = under_graph_aco->sous_graph[prev][current]->list;
 
-                    if (!ListInt_isEmpty(heuristic_list))
-                        tmp = ListInt_popFirst(heuristic_list);
+                    if (!ListInt_isEmpty(aco_list))
+                        tmp = ListInt_popFirst(aco_list);
 
-                    ListInt_concatenate(complet_path->list, heuristic_list);
+                    ListInt_concatenate(complet_path_aco->list, aco_list);
                 }
             }
 
             //FILE-CREATE-----------------------------------------------
-            strcpy(fileName, "..\\Output_geojson\\TSP_Heuristic.geojson");
+            #ifdef TSP_ACO_GI
+
+                strcpy(fileName, "..\\Output_geojson\\TSP_GrandeInstance.geojson");
+
+            #else
+
+                strcpy(fileName, "..\\Output_geojson\\TSP_Aco.geojson");
+
+            #endif //TSP_ACO_GI
+
             if (FileFonction_fileExist(fileName))
                 FileFonction_deleteFile(fileName);
 
             FileFonction_createFile(fileName);
 
-            Print_writeGeoJson_Bonus(fileName, complet_path, coord_plan, tab_node_heuristic, node_count_heuristic);
-        
+            //Print_writeGeoJson(fileName, complet_path_aco, coord_plan);
+            Print_writeGeoJson_Bonus(fileName, complet_path_aco, coord_plan, tab_node_aco, node_count_aco);
+
+            free_path(&complet_path_aco);
+
         #endif // FILE_CREATE
-    #endif // FOR_MOODLE
 
-    //FREE------------------------------------------------------
-    free_graph(&graph_plan);
-    free_graph(&graph_heuristic);
+        //FREE------------------------------------------------------
+        free_graph(&graph_plan);
+        free_graph(&graph_aco);
 
-    free_coord(&coord_plan);
+        free_coord(&coord_plan);
 
-    free_path(&path);
-    free_path(&complet_path);
+        free_path(&path);
 
-    fclose(pfile);
-    pfile = NULL;
+        fclose(pfile);
+        pfile = NULL;
 
-    free(tab_node_heuristic);
-#endif // TSP_HEURISTIC
+        free(tab_node_aco);
 
-#ifdef TSP_ACO_4
-    pfile = fopen("../TPF_Donnees/4_TSP_ACO/input4.txt", "r");
-    AssertNew(pfile);
+    #endif // TSP_ACO
 
-    tmp = fscanf(pfile, "%[^\n]\n", path_graph);
-    tmp = fscanf(pfile, "%[^\n]\n", path_inter);
+    #ifdef TSP_ACO_BONUS
 
-    int node_count_aco = 0;
+        pfile = fopen("../TPF_Donnees/4_TSP_ACO/input1.txt", "r");
+        AssertNew(pfile);
 
-    tmp = fscanf(pfile, "%d\n", &node_count_aco);
+        tmp = fscanf(pfile, "%[^\n]\n", path_graph);
+        tmp = fscanf(pfile, "%[^\n]\n", path_inter);
 
-    //GRAPH-----------------------------------------------------
-    graph_plan = Graph_load(path_graph);
-    coord_plan = Print_createTab(path_inter);
+        int node_count_acobonus = 0;
 
-    Graph* graph_aco = Graph_create(node_count_aco);
+        tmp = fscanf(pfile, "%d\n", &node_count_acobonus);
 
-    UnderGraph* under_graph_aco = Sous_Graph_create(node_count_aco);
+        //GRAPH-----------------------------------------------------
+        graph_plan = Graph_load(path_graph);
+        coord_plan = Print_createTab(path_inter);
 
-    int* tab_node_aco = (int*)calloc(node_count_aco, sizeof(int));
+        //TODO -> Mettre le save du path_matrix ici aussi
 
-    for (i = 0; i < node_count_aco; i++)
-        tmp = fscanf(pfile, "%d", &tab_node_aco[i]);
+        Graph* graph_acobonus = Graph_create(node_count_acobonus);
 
-    for (i = 0; i < node_count_aco; i++) {
-        for (j = 0; j < node_count_aco; j++) {
-            if (i == j)
-                continue;
+        //Graph_load("../TPF_Donnees/4_TSP_ACO/save4.txt"); <---------- POUR LOAD AVEC LA SAVE
 
-            path = Binary_Graph_shortestPath(graph_plan, tab_node_aco[i], tab_node_aco[j]);
+        UnderGraph* under_graph_acobonus = Sous_Graph_create(node_count_acobonus);
 
-            if (Graph_getArc(graph_aco, i, j) == NULL && path != NULL)
-                Graph_setArc(graph_aco, i, j, path->distance);
+        int* tab_node_acobonus = (int*)calloc(node_count_acobonus, sizeof(int));
 
-            under_graph_aco->sous_graph[i][j] = path;
-        }
-    }
+        for (i = 0; i < node_count_acobonus; i++)
+            tmp = fscanf(pfile, "%d", &tab_node_acobonus[i]);
 
-    //ACO------------------------------------------------------
-    path = Graph_tspFromACO(graph_aco, 0, 1000, 100, 2.f, 3.f , 0.1f, 2.0f);
-    
-    
+        for (i = 0; i < node_count_acobonus; i++) {
+            for (j = 0; j < node_count_acobonus; j++) {
+                if (i == j)
+                    continue;
 
-    /* Path* pa = Path_create(0);
-    Graph* grrr = Graph_create(4);
+                path = Binary_Graph_shortestPath(graph_plan, tab_node_acobonus[i], tab_node_acobonus[j]);
 
-    Graph_setArc(grrr, 0, 1, 1);
-    Graph_setArc(grrr, 0, 2, 2);
-    Graph_setArc(grrr, 0, 3, 8);
+                if (Graph_getArc(graph_acobonus, i, j) == NULL && path != NULL)
+                    Graph_setArc(graph_acobonus, i, j, path->distance);
 
-    Graph_setArc(grrr, 1, 0, 1);
-    Graph_setArc(grrr, 1, 3, 2);
-
-    Graph_setArc(grrr, 2, 0, 2);
-    Graph_setArc(grrr, 2, 3, 2);
-
-    Graph_print(grrr);
-    //Graph_acoPheromoneGlobalUpdate(phem, 0.05f);
-    ListInt_insertLast(pa->list, 1);
-    ListInt_insertLast(pa->list, 3);
-    pa->distance = 3;
-    Path_print(pa);
-    Graph_acoPheromoneUpdatePath(phem, grrr, pa, 2.0f);
-    Graph_print(phem);*/
-
-    /*Graph* graph_p = Graph_create(graph_aco->size);
-    for (int i = 0; i != graph_aco->size; i++) {
-        for (int j = 0; j != graph_aco->size; j++) {
-            if (i == j) {
-                continue;
-            }
-            else {
-                Graph_setArc(graph_p, i, j, 1);
+                under_graph_acobonus->sous_graph[i][j] = path;
             }
         }
-    }*/
 
 
-    //path = Graph_acoConstructPath(graph_aco, graph_p, 0, 1.f, 1.f);
-    Path_print(path);
-    
-#ifdef FILE_CREATE_TODO
-    Path* complet_path_aco = NULL;
+        //GLOUTON-BEFORE-ACO--------------------------------------
+        Graph* phem = Graph_create(graph_acobonus->size);
+        for (int u = 0; u != phem->size; u++) {
+            for (int v = 0; v != phem->size; v++) {
+                if (u != v) {
+                    Graph_setArc(phem, u, v, 0.2f);
+                }
+            }
+        }
+        //Graph_print(graph_acobonus);
 
-    if (!ListInt_isEmpty(path->list)) {
-        complet_path_aco = Path_create(tab_node_aco[0]);
+        path = Graph_tspFromHeuristic(graph_acobonus, 0);
 
-        int prev = 0, current = ListInt_popFirst(path->list);
+        int idprev = ListInt_popFirst(path->list);
+        int idnext = -1;
 
         while (!ListInt_isEmpty(path->list)) {
-            prev = current;
-            
-            current = ListInt_popFirst(path->list);
-
-            ListInt* aco_list = under_graph_aco->sous_graph[prev][current]->list;
-
-            if (!ListInt_isEmpty(aco_list))
-                tmp = ListInt_popFirst(aco_list);
-
-            ListInt_concatenate(complet_path_aco->list, aco_list);
+            idnext = ListInt_popFirst(path->list);
+            Graph_setArc(phem, idprev, idnext, 4);
+            idprev = idnext;
         }
-    }
 
-    //FILE-CREATE-----------------------------------------------
-    char* fileName = "..\\Output_geojson\\TSP_Aco.geojson";
-    if (FileFonction_fileExist(fileName))
-        FileFonction_deleteFile(fileName);
+        printf("\n\n");
 
-    FileFonction_createFile(fileName);
+        int minid = -1;
+        float mindist = -1;
 
-    //Print_writeGeoJson(fileName, complet_path_aco, coord_plan);
-    Print_writeGeoJson_Bonus(fileName, complet_path_aco, coord_plan, tab_node_aco, node_count_aco);
-#endif // FILE_CREATE
+        //ACO Bonus------------------------------------------------------
+        path = Graph_tspFromACO_Bonus(graph_acobonus, phem, 0, 70, 100, 2.f, 3.f, 0.1f, 2.0f);
+
+        Path_print(path);
+
+        //OPTI-LOCAL-----------------------------------------------------
+        path = Local_Opti(graph_acobonus, path);
+        Path_print(path);
+
+        #ifdef BONUS_ALL_START
+
+            //ACO Bonus all start -------------------------------------------
+            for (int i = 0; i != node_count_acobonus; i++) {
+                path = Graph_tspFromHeuristic(graph_acobonus, i);
+                    
+                printf("#############\n");
+                printf(" path dist h =%d %f\n",i, path->distance);
+                printf("#############\n");
+
+                int idprev = ListInt_popFirst(path->list);
+                int idnext = -1;
+
+                for (int u = 0; u != phem->size; u++) {
+                    for (int v = 0; v != phem->size; v++) {
+                        if (u != v) {
+                        Graph_setArc(phem, u, v, 0.4f);
+                        }
+                    }
+                }
+
+                while (!ListInt_isEmpty(path->list)) {
+                    idnext = ListInt_popFirst(path->list);
+                    Graph_setArc(phem, idprev, idnext, 2);
+                    idprev = idnext;
+                }
+
+                path = Graph_tspFromACO_Bonus(graph_acobonus, phem, i, 60, 100, 2.f, 3.f, 0.1f, 2.0f);
+                
+                printf("#############\n");
+                printf("%d %f\n",i, path->distance);
+                printf("#############\n");
+
+                if (minid == -1 || mindist > path->distance) {
+                    minid = i;
+                    mindist = path->distance;
+                }
+            }
+
+            printf("%d %f\n", minid, mindist);
+
+
+            //TODO - FREE
+        #endif //BONUS_ALL_START
+    #endif //TSP_ACO_BONUS
 
     //FREE------------------------------------------------------
-    free_graph(&graph_plan);
-    free_graph(&graph_aco);
-
-    free_coord(&coord_plan);
-
-    free_path(&path);
-
-    fclose(pfile);
+    if (pfile)
+        fclose(pfile);
     pfile = NULL;
 
-    free(tab_node_aco);
-#endif // TSP_ACO
+    if (file_save)
+        fclose(file_save);
+    file_save = NULL;
+
+    if (graph_plan)
+        Graph_destroy(graph_plan);
+    graph_plan = NULL;
+
+    if (coord_plan)
+        Sous_Graph_destroy(coord_plan);
+    coord_plan = NULL;
+
+    if (path)
+        Path_destroy(path);
+    path = NULL;
 
 #ifdef ASTAR
         pfile = fopen("../TPF_Donnees/6_A_Star/input1.txt", "r");
