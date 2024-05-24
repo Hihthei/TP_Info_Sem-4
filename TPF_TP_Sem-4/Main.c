@@ -1,4 +1,5 @@
 #include "AStar.h"
+#include "Sous_Graph.h"
 #include "Bin_Heap.h"
 
 void free_graph(Graph** graph) {
@@ -151,7 +152,16 @@ int main() {
 
     #ifdef PATH_MATRIX_2
 
-        pfile = fopen("../TPF_Donnees/2_Path_matrix/input1.txt", "r");
+        #ifdef LOAD_MATRIX
+
+            pfile = fopen("../Personnal_Data/2_Path_matrix/input_save_1.txt", "r");
+
+        #else
+
+            pfile = fopen("../TPF_Donnees/2_Path_matrix/input1.txt", "r");
+
+        #endif // LOAD_MATRIX
+
         if (!pfile)
             pfile = stdin;
 
@@ -179,13 +189,12 @@ int main() {
         //GRAPH-----------------------------------------------------
         #ifdef LOAD_MATRIX
 
-                graph_matrix = Graph_load("../TPF_Donnees/2_Path_matrix/save_1.txt");
-                under_graph = Sous_Graph_load("../TPF_Donnees/2_Path_matrix/sous_graph_1.txt");
+            graph_matrix = Graph_load(path_graph);
+            under_graph = Sous_Graph_load(path_inter);
 
         #else
 
             graph_plan = Graph_load(path_graph);
-            coord_plan = Print_createTab(path_inter);
 
             for (i = 0; i < node_count; i++) {
                 for (j = 0; j < node_count; j++) {
@@ -206,7 +215,7 @@ int main() {
         #ifdef PATH_MATRIX_SAVE // SAVE LA MATRICE ET SOUS GRAPH
 
             //FILE-CREATE-----------------------------------------------
-            strcpy(fileName, "../TPF_Donnees/2_Path_matrix/save_1.txt");
+            strcpy(fileName, "../Personnal_Data/2_Path_matrix/save/save_tmp.txt");
             if (FileFonction_fileExist(fileName))
                 FileFonction_deleteFile(fileName);
 
@@ -220,7 +229,7 @@ int main() {
             //FILE-CREATE-----------------------------------------------
             char fileName_undergraph[256] = "";
 
-            strcpy(fileName_undergraph, "../TPF_Donnees/2_Path_matrix/sous_graph_1.txt");
+            strcpy(fileName_undergraph, "../Personnal_Data/2_Path_matrix/save/sous_graph_tmp.txt");
             if (FileFonction_fileExist(fileName_undergraph))
                 FileFonction_deleteFile(fileName_undergraph);
 
@@ -247,6 +256,12 @@ int main() {
                 }
             }
 
+            fclose(file_save);
+            file_save = NULL;
+
+            fclose(file_save_undergraph);
+            file_save_undergraph = NULL;
+
         #endif // PATH_MATRIX_SAVE
 
         #ifdef FOR_MOODLE
@@ -271,8 +286,6 @@ int main() {
         under_graph = NULL;
 
         path = NULL;
-
-        free_coord(&coord_plan);
 
         fclose(pfile);
         pfile = NULL;
@@ -505,7 +518,7 @@ int main() {
 
     #ifdef TSP_ACO_BONUS
 
-        pfile = fopen("../TPF_Donnees/4_TSP_ACO/input4.txt", "r");
+        pfile = fopen("../TPF_Donnees/4_TSP_ACO/input1.txt", "r");
         if (!pfile)
             pfile = stdin;
 
@@ -563,7 +576,7 @@ int main() {
         #ifdef TSP_ACO_SAVE_MATRIX // SAVE LA MATRICE ET SOUS GRAPH
 
             //FILE-CREATE-----------------------------------------------
-            strcpy(fileName, "../TPF_Donnees/4_TSP_ACO/save_4.txt");
+            strcpy(fileName, "../TPF_Donnees/4_TSP_ACO/save_1.txt");
             if (FileFonction_fileExist(fileName))
                 FileFonction_deleteFile(fileName);
 
@@ -577,7 +590,7 @@ int main() {
             //FILE-CREATE-----------------------------------------------
             char fileName_undergraph_aco[256] = "";
 
-            strcpy(fileName_undergraph_aco, "../TPF_Donnees/4_TSP_ACO/sous_graph_4.txt");
+            strcpy(fileName_undergraph_aco, "../TPF_Donnees/4_TSP_ACO/sous_graph_1.txt");
             if (FileFonction_fileExist(fileName_undergraph_aco))
                 FileFonction_deleteFile(fileName_undergraph_aco);
 
@@ -603,6 +616,12 @@ int main() {
                     }
                 }
             }
+            
+            fclose(file_save);
+            file_save = NULL;
+
+            fclose(file_save_undergraph_aco);
+            file_save_undergraph_aco = NULL;
 
         #endif // TSP_ACO_SAVE_MATRIX
 
@@ -629,6 +648,8 @@ int main() {
                 idprev = idnext;
             }
 
+            free_path(&path);
+
             int minid = -1;
             float mindist = -1;
 
@@ -637,8 +658,11 @@ int main() {
 
             Path_print(path);
 
-        #endif // TSP_GLOUTON_ACO
+            //FREE------------------------------------------------------
+            free_graph(&phem);
+            free_path(&path);
 
+        #endif // TSP_GLOUTON_ACO
 
         #ifdef TSP_OPTI_LOCAL
 
@@ -646,6 +670,8 @@ int main() {
             path = Local_Opti(graph_acobonus, path);
             Path_print(path);
 
+            free_path(&path);
+            
         #endif // TSP_OPTI_LOCAL
 
         #ifdef BONUS_ALL_START
@@ -675,6 +701,8 @@ int main() {
                     idprev = idnext;
                 }
 
+                free_path(&path);
+
                 path = Graph_tspFromACO_Bonus(graph_acobonus, phem, i, 60, 100, 2.f, 3.f, 0.1f, 2.0f);
                 
                 printf("#############\n");
@@ -685,13 +713,31 @@ int main() {
                     minid = i;
                     mindist = path->distance;
                 }
+
+                free_path(&path);
             }
 
             printf("%d %f\n", minid, mindist);
 
+            free_path(&path);
 
-            //TODO - FREE
         #endif //BONUS_ALL_START
+
+            //FREE------------------------------------------------------
+            free_graph(&graph_plan);
+            free_coord(&coord_plan);
+
+            free_graph(&graph_acobonus);
+
+            free_undergraph(&under_graph_acobonus);
+
+            free_path(&path);
+
+            fclose(pfile);
+            pfile = NULL;
+
+            free(tab_node_acobonus);
+
     #endif //TSP_ACO_BONUS
 
     //FREE------------------------------------------------------

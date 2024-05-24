@@ -21,7 +21,7 @@
     INLINE int minInt(int a, int b) { return a < b ? a : b; }
     INLINE int maxInt(int a, int b) { return a > b ? a : b; }
 
-    #define FILE_CREATE
+    //#define FILE_CREATE
 
     //#define FOR_MOODLE
     
@@ -29,7 +29,7 @@
 
     //#define ASTAR
 
-    //#define PATH_MATRIX_2
+    #define PATH_MATRIX_2
 
         #ifdef PATH_MATRIX_2
             
@@ -48,12 +48,12 @@
 
         #endif // TSP_ACO_4
 
-    #define TSP_ACO_BONUS
+    //#define TSP_ACO_BONUS
 
         #ifdef TSP_ACO_BONUS
 
-            //#define TSP_ACO_LOAD_MATRIX
-            //#define TSP_ACO_SAVE_MATRIX
+            #define TSP_ACO_LOAD_MATRIX
+            #define TSP_ACO_SAVE_MATRIX
 
             #define TSP_GLOUTON_ACO
             #define TSP_OPTI_LOCAL
