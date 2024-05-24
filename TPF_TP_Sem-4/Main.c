@@ -110,7 +110,7 @@ int main() {
 
     #ifdef PATH_MATRIX_2
 
-        pfile = fopen("../TPF_Donnees/2_Path_matrix/input1.txt", "r");
+        pfile = fopen("../TPF_Donnees/2_Path_matrix/input4.txt", "r");
         if (!pfile)
             pfile = stdin;
 
@@ -142,7 +142,7 @@ int main() {
         #ifdef LOAD_MATRIX
 
             graph_matrix = Graph_load("../TPF_Donnees/2_Path_matrix/save_1.txt");
-            under_graph = NULL;
+            under_graph = Sous_Graph_load("../TPF_Donnees/2_Path_matrix/sous_graph_1.txt");
 
         #else
 
@@ -152,7 +152,7 @@ int main() {
                         continue;
     
                     path = Binary_Graph_shortestPath(graph_plan, tab_node[i], tab_node[j]);
-                    Path_print(path);
+                    
                     if (Graph_getArc(graph_matrix, i, j) == NULL && path != NULL)
                         Graph_setArc(graph_matrix, i, j, path->distance);
     
@@ -162,52 +162,52 @@ int main() {
 
         #endif // LOAD_MATRIX
 
-        #ifdef PATH_MATRIX_SAVE // SAVE LA MATRICE POUR ACO
+        #ifdef PATH_MATRIX_SAVE // SAVE LA MATRICE ET SOUS GRAPH
 
-                //FILE-CREATE-----------------------------------------------
-                strcpy(fileName, "../TPF_Donnees/2_Path_matrix/save_test.txt");
-                if (FileFonction_fileExist(fileName))
-                    FileFonction_deleteFile(fileName);
+            //FILE-CREATE-----------------------------------------------
+            strcpy(fileName, "../TPF_Donnees/2_Path_matrix/save_4.txt");
+            if (FileFonction_fileExist(fileName))
+                FileFonction_deleteFile(fileName);
 
-                FileFonction_createFile(fileName);
+            FileFonction_createFile(fileName);
 
-                file_save = fopen(fileName, "w");
-                AssertNew(file_save);
+            file_save = fopen(fileName, "w");
+            AssertNew(file_save);
 
-                fprintf(file_save, "%d %d\n", node_count, node_count * node_count);
+            fprintf(file_save, "%d %d\n", node_count, node_count * node_count);
 
-                //FILE-CREATE-----------------------------------------------
-                char fileName_undergraph[256] = "";
+            //FILE-CREATE-----------------------------------------------
+            char fileName_undergraph[256] = "";
 
-                strcpy(fileName_undergraph, "../TPF_Donnees/2_Path_matrix/sous_graph_1.txt");
-                if (FileFonction_fileExist(fileName_undergraph))
-                    FileFonction_deleteFile(fileName_undergraph);
+            strcpy(fileName_undergraph, "../TPF_Donnees/2_Path_matrix/sous_graph_4.txt");
+            if (FileFonction_fileExist(fileName_undergraph))
+                FileFonction_deleteFile(fileName_undergraph);
 
-                FileFonction_createFile(fileName_undergraph);
+            FileFonction_createFile(fileName_undergraph);
 
-                FILE* file_save_undergraph = fopen(fileName_undergraph, "w");
-                AssertNew(file_save_undergraph);
+            FILE* file_save_undergraph = fopen(fileName_undergraph, "w");
+            AssertNew(file_save_undergraph);
 
-                fprintf(file_save_undergraph, "%d %d\n", node_count, node_count * node_count);
+            fprintf(file_save_undergraph, "%d %d\n", node_count, node_count * node_count);
 
-        #endif // PATH_MATRIX_SAVE
-        
-        #ifdef PATH_MATRIX_SAVE // SAVE LA MATRICE ET SOUS GRAPH POUR ACO
-        for (i = 0; i < node_count; i++) {
-            for (j = 0; j < node_count; j++) {
-                path = Binary_Graph_shortestPath(graph_plan, tab_node[i], tab_node[j]);
-                if (i == j) {
-                    fprintf(file_save, "%d %d 0.0\n", i, j);
-                    fprintf(file_save_undergraph, "%d %d 0.0\n", i, j);
-                }
-                else {
-                    fprintf(file_save, "%d %d %f\n", i, j, path->distance);
-                    fprintf(file_save_undergraph, "%d %d %.1f ", i, j, path->distance);
-                    Sous_Graph_save_path(file_save_undergraph, path);
+            //FILE-SAVE-------------------------------------------------
+            for (i = 0; i < node_count; i++) {
+                for (j = 0; j < node_count; j++) {
+                    path = Binary_Graph_shortestPath(graph_plan, tab_node[i], tab_node[j]);
+                    if (i == j) {
+                        fprintf(file_save, "%d %d 0.0\n", i, j);
+                        fprintf(file_save_undergraph, "%d %d 0.0\n", i, j);
+                    }
+                    else {
+                        fprintf(file_save, "%d %d %f\n", i, j, path->distance);
+                        fprintf(file_save_undergraph, "%d %d %.1f ", i, j, path->distance);
+                        Sous_Graph_save_path(file_save_undergraph, path);
+                    }
                 }
             }
-        }
+
         #endif // PATH_MATRIX_SAVE
+
         #ifdef FOR_MOODLE
 
             Graph_printMoodle(graph_matrix);

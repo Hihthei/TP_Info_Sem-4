@@ -67,6 +67,8 @@ void Sous_Graph_save_path(FILE* pfile, Path* path) {
 
 	ListInt* copy_list = ListInt_copy(path->list);
 
+	fprintf(pfile, "%d ", copy_list->nodeCount);
+
 	while (!ListInt_isEmpty(copy_list)) {
 		fprintf(pfile, "%d ", ListInt_popFirst(copy_list));
 	}
@@ -90,13 +92,13 @@ UnderGraph* Sous_Graph_load(char* fileName) {
 
 	under_graph = Sous_Graph_create(node_count);
 
-	int u = 0, v = 0, start = 0, list_value = 0;
+	int u = 0, v = 0, start = 0, list_value = 0, node_list_count = 0;
 	float dist = 0.0f;
 
 	for (int i = 0; i < arc_count; i++) {
-		u = 0; v = 0; start = 0; dist = 0.0f; list_value = -1;
+		u = 0; v = 0; start = 0; dist = 0.0f; list_value = -1; node_list_count = 0;
 
-		tmp = fscanf(pfile, "%d %d %f", &u, &v, &dist);
+		tmp = fscanf(pfile, "%d %d %f %d", &u, &v, &dist, &node_list_count);
 
 		if (u == v) {
 			Path* path = Path_create(0);
@@ -108,11 +110,9 @@ UnderGraph* Sous_Graph_load(char* fileName) {
 			continue;
 		}
 
-		tmp = fscanf(pfile, "%d", &start);
-
 		ListInt* list = ListInt_create();
 
-		while (list_value != (int)'\n') {
+		for (int j = 0; j < node_list_count; j++) {
 			tmp = fscanf(pfile, "%d", &list_value);
 			ListInt_insertLast(list, list_value);
 		}
