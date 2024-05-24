@@ -513,7 +513,6 @@ int main() {
             }
         }
 
-
         Graph* phem = Graph_create(graph_acobonus->size);
         for (int u = 0; u != phem->size; u++) {
             for (int v = 0; v != phem->size; v++) {
@@ -535,8 +534,10 @@ int main() {
         }
 
         printf("\n\n");
+
         int minid = -1;
         float mindist = -1;
+
         //ACO Bonus------------------------------------------------------
         path = Graph_tspFromACO_Bonus(graph_acobonus, phem, 0, 70, 100, 2.f, 3.f, 0.1f, 2.0f);
 
@@ -545,39 +546,48 @@ int main() {
         path = Local_Opti(graph_acobonus, path);
         Path_print(path);
 
-        //ACO Bonus all start -------------------------------------------
-        /*for (int i = 0; i != node_count_acobonus; i++) {
-            path = Graph_tspFromHeuristic(graph_acobonus, i);
-            printf("#############\n");
-            printf(" path dist h =%d %f\n",i, path->distance);
-            printf("#############\n");
-            int idprev = ListInt_popFirst(path->list);
-            int idnext = -1;
-            for (int u = 0; u != phem->size; u++) {
-                for (int v = 0; v != phem->size; v++) {
-                    if (u != v) {
+        #ifdef BONUS_ALL_START
+
+            //ACO Bonus all start -------------------------------------------
+            for (int i = 0; i != node_count_acobonus; i++) {
+                path = Graph_tspFromHeuristic(graph_acobonus, i);
+                    
+                printf("#############\n");
+                printf(" path dist h =%d %f\n",i, path->distance);
+                printf("#############\n");
+
+                int idprev = ListInt_popFirst(path->list);
+                int idnext = -1;
+
+                for (int u = 0; u != phem->size; u++) {
+                    for (int v = 0; v != phem->size; v++) {
+                        if (u != v) {
                         Graph_setArc(phem, u, v, 0.4f);
+                        }
                     }
                 }
-            }
-            while (!ListInt_isEmpty(path->list)) {
-                idnext = ListInt_popFirst(path->list);
-                Graph_setArc(phem, idprev, idnext, 2);
-                idprev = idnext;
-            }
-            path = Graph_tspFromACO_Bonus(graph_acobonus, phem, i, 60, 100, 2.f, 3.f, 0.1f, 2.0f);
-            printf("#############\n");
-            printf("%d %f\n",i, path->distance);
-            printf("#############\n");
-            if (minid == -1 || mindist > path->distance) {
-                minid = i;
-                mindist = path->distance;
-            }
-        }
 
-        printf("%d %f\n", minid, mindist);
-        */
+                while (!ListInt_isEmpty(path->list)) {
+                    idnext = ListInt_popFirst(path->list);
+                    Graph_setArc(phem, idprev, idnext, 2);
+                    idprev = idnext;
+                }
 
+                path = Graph_tspFromACO_Bonus(graph_acobonus, phem, i, 60, 100, 2.f, 3.f, 0.1f, 2.0f);
+                
+                printf("#############\n");
+                printf("%d %f\n",i, path->distance);
+                printf("#############\n");
+
+                if (minid == -1 || mindist > path->distance) {
+                    minid = i;
+                    mindist = path->distance;
+                }
+            }
+
+            printf("%d %f\n", minid, mindist);
+
+        #endif //BONUS_ALL_START
     #endif //TSP_ACO_BONUS
 
     //TIME CLOCK END -------------------------------------------

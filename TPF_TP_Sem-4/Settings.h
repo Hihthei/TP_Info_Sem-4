@@ -42,14 +42,15 @@
 
         #ifdef TSP_ACO_4
 
-            //#define TSP_ACO_GI //Grande Instance -> france
+            #define TSP_ACO_GI //Grande Instance -> france
 
         #endif // TSP_ACO_4
 
-    #define TSP_ACO_BONUS
+    //#define TSP_ACO_BONUS
 
         #ifdef TSP_ACO_BONUS
 
+            #define BONUS_ALL_START
 
         #endif // TSP_ACO_BONUS
 
