@@ -109,47 +109,6 @@ int main() {
 
     #endif // DIJKSTRA_1
 
-    #ifdef ASTAR
-
-            pfile = fopen("../TPF_Donnees/1_Dijkstra/input1.txt", "r");
-            AssertNew(pfile);
-
-            tmp = fscanf(pfile, "%[^\n]\n", path_graph);
-            tmp = fscanf(pfile, "%[^\n]\n", path_inter);
-
-            int tab_star[2] = { 0 };
-            tmp = fscanf(pfile, "%d %d", &tab_star[0], &tab_star[1]);
-
-            //GRAPH-----------------------------------------------------
-            graph_plan = Graph_load(path_graph);
-            coord_plan = Print_createTab(path_inter);
-
-            //ASTAR----------------------------------------------------
-            path = AStar_shortestPath(graph_plan, coord_plan, start, end);
-
-            Path_print(path);
-
-            #ifdef FILE_CREATE
-
-                    strcpy(fileName, "..\\Output_geojson\\AStar.geojson");
-                    if (FileFonction_fileExist(fileName))
-                        FileFonction_deleteFile(fileName);
-
-                    FileFonction_createFile(fileName);
-                    Print_writeGeoJson_Bonus(fileName, path, coord_plan, &start, 1);
-
-            #endif // FILE_CREATE
-
-            // FREE------------------------------------------------------
-            free_graph(&graph_plan);
-            free_coord(&coord_plan);
-            free_path(&path);
-
-            fclose(pfile);
-            pfile = NULL;
-
-    #endif // ASTAR
-
     #ifdef PATH_MATRIX_2
 
         #ifdef LOAD_MATRIX
@@ -210,59 +169,59 @@ int main() {
                 }
             }
 
-        #endif // LOAD_MATRIX
+            #ifdef PATH_MATRIX_SAVE // SAVE LA MATRICE ET SOUS GRAPH
 
-        #ifdef PATH_MATRIX_SAVE // SAVE LA MATRICE ET SOUS GRAPH
+                //FILE-CREATE-----------------------------------------------
+                strcpy(fileName, "../Personnal_Data/2_Path_matrix/save/save_tmp.txt");
+                if (FileFonction_fileExist(fileName))
+                    FileFonction_deleteFile(fileName);
 
-            //FILE-CREATE-----------------------------------------------
-            strcpy(fileName, "../Personnal_Data/2_Path_matrix/save/save_tmp.txt");
-            if (FileFonction_fileExist(fileName))
-                FileFonction_deleteFile(fileName);
+                FileFonction_createFile(fileName);
 
-            FileFonction_createFile(fileName);
+                file_save = fopen(fileName, "w");
+                AssertNew(file_save);
 
-            file_save = fopen(fileName, "w");
-            AssertNew(file_save);
+                fprintf(file_save, "%d %d\n", node_count, node_count * node_count);
 
-            fprintf(file_save, "%d %d\n", node_count, node_count * node_count);
+                //FILE-CREATE-----------------------------------------------
+                char fileName_undergraph[256] = "";
 
-            //FILE-CREATE-----------------------------------------------
-            char fileName_undergraph[256] = "";
+                strcpy(fileName_undergraph, "../Personnal_Data/2_Path_matrix/save/sous_graph_tmp.txt");
+                if (FileFonction_fileExist(fileName_undergraph))
+                    FileFonction_deleteFile(fileName_undergraph);
 
-            strcpy(fileName_undergraph, "../Personnal_Data/2_Path_matrix/save/sous_graph_tmp.txt");
-            if (FileFonction_fileExist(fileName_undergraph))
-                FileFonction_deleteFile(fileName_undergraph);
+                FileFonction_createFile(fileName_undergraph);
 
-            FileFonction_createFile(fileName_undergraph);
+                FILE* file_save_undergraph = fopen(fileName_undergraph, "w");
+                AssertNew(file_save_undergraph);
 
-            FILE* file_save_undergraph = fopen(fileName_undergraph, "w");
-            AssertNew(file_save_undergraph);
+                fprintf(file_save_undergraph, "%d %d\n", node_count, node_count * node_count);
 
-            fprintf(file_save_undergraph, "%d %d\n", node_count, node_count * node_count);
-
-            //FILE-SAVE-------------------------------------------------
-            for (i = 0; i < node_count; i++) {
-                for (j = 0; j < node_count; j++) {
-                    path = Binary_Graph_shortestPath(graph_plan, tab_node[i], tab_node[j]);
-                    if (i == j) {
-                        fprintf(file_save, "%d %d 0.0\n", i, j);
-                        fprintf(file_save_undergraph, "%d %d 0.0\n", i, j);
-                    }
-                    else {
-                        fprintf(file_save, "%d %d %f\n", i, j, path->distance);
-                        fprintf(file_save_undergraph, "%d %d %.1f ", i, j, path->distance);
-                        Sous_Graph_save_path(file_save_undergraph, path);
+                //FILE-SAVE-------------------------------------------------
+                for (i = 0; i < node_count; i++) {
+                    for (j = 0; j < node_count; j++) {
+                        path = Binary_Graph_shortestPath(graph_plan, tab_node[i], tab_node[j]);
+                        if (i == j) {
+                            fprintf(file_save, "%d %d 0.0\n", i, j);
+                            fprintf(file_save_undergraph, "%d %d 0.0\n", i, j);
+                        }
+                        else {
+                            fprintf(file_save, "%d %d %f\n", i, j, path->distance);
+                            fprintf(file_save_undergraph, "%d %d %.1f ", i, j, path->distance);
+                            Sous_Graph_save_path(file_save_undergraph, path);
+                        }
                     }
                 }
-            }
 
-            fclose(file_save);
-            file_save = NULL;
+                fclose(file_save);
+                file_save = NULL;
 
-            fclose(file_save_undergraph);
-            file_save_undergraph = NULL;
+                fclose(file_save_undergraph);
+                file_save_undergraph = NULL;
 
-        #endif // PATH_MATRIX_SAVE
+            #endif // PATH_MATRIX_SAVE
+
+        #endif // LOAD_MATRIX
 
         #ifdef FOR_MOODLE
 
@@ -518,7 +477,30 @@ int main() {
 
     #ifdef TSP_ACO_BONUS
 
-        pfile = fopen("../TPF_Donnees/4_TSP_ACO/input1.txt", "r");
+        #ifdef TSP_ACO_LOAD_MATRIX
+
+            pfile = fopen("../Personnal_Data/4_TSP_ACO/input_save_4.txt", "r");
+            if (!pfile)
+                pfile = stdin;
+
+            AssertNew(pfile);
+            tmp = fscanf(pfile, "%[^\n]\n", path_inter);
+
+            coord_plan = Print_createTab(path_inter);
+
+        #else
+
+            #ifdef TSP_ACO_GI
+
+                pfile = fopen("../TPF_Donnees/5_Grande_instance/input.txt", "r");
+
+            #else
+
+                pfile = fopen("../TPF_Donnees/4_TSP_ACO/input4.txt", "r");
+
+            #endif //TSP_ACO_GI
+        #endif //TSP_ACO_LOAD_MATRIX
+
         if (!pfile)
             pfile = stdin;
 
@@ -546,8 +528,8 @@ int main() {
 
         #ifdef TSP_ACO_LOAD_MATRIX
 
-            graph_acobonus = Graph_load("../TPF_Donnees/4_TSP_ACO/save_1.txt");
-            under_graph_acobonus = Sous_Graph_load("../TPF_Donnees/4_TSP_ACO/sous_graph_1.txt");
+            graph_acobonus = Graph_load(path_graph);
+            under_graph_acobonus = Sous_Graph_load(path_inter);
 
         #else
 
@@ -571,72 +553,72 @@ int main() {
                 }
             }
 
-        #endif // TSP_ACO_LOAD_MATRIX
+            #ifdef TSP_ACO_SAVE_MATRIX // SAVE LA MATRICE ET SOUS GRAPH
 
-        #ifdef TSP_ACO_SAVE_MATRIX // SAVE LA MATRICE ET SOUS GRAPH
+                //FILE-CREATE-----------------------------------------------
+                strcpy(fileName, "../Personnal_Data/4_TSP_ACO/save/save_tmp.txt");
+                if (FileFonction_fileExist(fileName))
+                    FileFonction_deleteFile(fileName);
 
-            //FILE-CREATE-----------------------------------------------
-            strcpy(fileName, "../TPF_Donnees/4_TSP_ACO/save_1.txt");
-            if (FileFonction_fileExist(fileName))
-                FileFonction_deleteFile(fileName);
+                FileFonction_createFile(fileName);
 
-            FileFonction_createFile(fileName);
+                file_save = fopen(fileName, "w");
+                AssertNew(file_save);
 
-            file_save = fopen(fileName, "w");
-            AssertNew(file_save);
+                fprintf(file_save, "%d %d\n", node_count_acobonus, node_count_acobonus * node_count_acobonus);
 
-            fprintf(file_save, "%d %d\n", node_count_acobonus, node_count_acobonus * node_count_acobonus);
+                //FILE-CREATE-----------------------------------------------
+                char fileName_undergraph_aco[256] = "";
 
-            //FILE-CREATE-----------------------------------------------
-            char fileName_undergraph_aco[256] = "";
+                strcpy(fileName_undergraph_aco, "../Personnal_Data/4_TSP_ACO/save/sous_graph_tmp.txt");
+                if (FileFonction_fileExist(fileName_undergraph_aco))
+                    FileFonction_deleteFile(fileName_undergraph_aco);
 
-            strcpy(fileName_undergraph_aco, "../TPF_Donnees/4_TSP_ACO/sous_graph_1.txt");
-            if (FileFonction_fileExist(fileName_undergraph_aco))
-                FileFonction_deleteFile(fileName_undergraph_aco);
+                FileFonction_createFile(fileName_undergraph_aco);
 
-            FileFonction_createFile(fileName_undergraph_aco);
+                FILE* file_save_undergraph_aco = fopen(fileName_undergraph_aco, "w");
+                AssertNew(file_save_undergraph_aco);
 
-            FILE* file_save_undergraph_aco = fopen(fileName_undergraph_aco, "w");
-            AssertNew(file_save_undergraph_aco);
+                fprintf(file_save_undergraph_aco, "%d %d\n", node_count_acobonus, node_count_acobonus * node_count_acobonus);
 
-            fprintf(file_save_undergraph_aco, "%d %d\n", node_count_acobonus, node_count_acobonus * node_count_acobonus);
+                //FILE-SAVE-------------------------------------------------
+                for (i = 0; i < node_count_acobonus; i++) {
+                    for (j = 0; j < node_count_acobonus; j++) {
+                        path = Binary_Graph_shortestPath(graph_plan, tab_node_acobonus[i], tab_node_acobonus[j]);
 
-            //FILE-SAVE-------------------------------------------------
-            for (i = 0; i < node_count_acobonus; i++) {
-                for (j = 0; j < node_count_acobonus; j++) {
-                    path = Binary_Graph_shortestPath(graph_plan, tab_node_acobonus[i], tab_node_acobonus[j]);
-                    if (i == j) {
-                        fprintf(file_save, "%d %d 0.0\n", i, j);
-                        fprintf(file_save_undergraph_aco, "%d %d 0.0\n", i, j);
-                    }
-                    else {
-                        fprintf(file_save, "%d %d %f\n", i, j, path->distance);
-                        fprintf(file_save_undergraph_aco, "%d %d %.1f ", i, j, path->distance);
-                        Sous_Graph_save_path(file_save_undergraph_aco, path);
+                        if (i == j) {
+                            fprintf(file_save, "%d %d 0.0\n", i, j);
+                            fprintf(file_save_undergraph_aco, "%d %d 0.0\n", i, j);
+                        }
+                        else {
+                            fprintf(file_save, "%d %d %f\n", i, j, path->distance);
+                            fprintf(file_save_undergraph_aco, "%d %d %.1f ", i, j, path->distance);
+                            Sous_Graph_save_path(file_save_undergraph_aco, path);
+                        }
                     }
                 }
+
+                fclose(file_save);
+                file_save = NULL;
+
+                fclose(file_save_undergraph_aco);
+                file_save_undergraph_aco = NULL;
+
+            #endif // TSP_ACO_SAVE_MATRIX
+        #endif // TSP_ACO_LOAD_MATRIX
+
+        Graph* phem = Graph_create(graph_acobonus->size);
+        for (int u = 0; u != phem->size; u++) {
+            for (int v = 0; v != phem->size; v++) {
+                if (u != v) {
+                    Graph_setArc(phem, u, v, 0.2f);
+                }
             }
-            
-            fclose(file_save);
-            file_save = NULL;
-
-            fclose(file_save_undergraph_aco);
-            file_save_undergraph_aco = NULL;
-
-        #endif // TSP_ACO_SAVE_MATRIX
+        }
 
         #ifdef TSP_GLOUTON_ACO
 
             //GLOUTON-BEFORE-ACO--------------------------------------
-            Graph* phem = Graph_create(graph_acobonus->size);
-            for (int u = 0; u != phem->size; u++) {
-                for (int v = 0; v != phem->size; v++) {
-                    if (u != v) {
-                        Graph_setArc(phem, u, v, 0.2f);
-                    }
-                }
-            }
-            
             path = Graph_tspFromHeuristic(graph_acobonus, 0);
 
             int idprev = ListInt_popFirst(path->list);
@@ -658,70 +640,98 @@ int main() {
 
             Path_print(path);
 
-            //FREE------------------------------------------------------
-            free_graph(&phem);
-            free_path(&path);
+            #ifdef BONUS_ALL_START
 
-        #endif // TSP_GLOUTON_ACO
+                //ACO Bonus all start -------------------------------------------
+                for (int i = 0; i != node_count_acobonus; i++) {
+                    path = Graph_tspFromHeuristic(graph_acobonus, i);
 
-        #ifdef TSP_OPTI_LOCAL
+                    printf("#############\n");
+                    printf(" path dist h =%d %f\n", i, path->distance);
+                    printf("#############\n");
 
-            //OPTI-LOCAL-----------------------------------------------------
-            path = Local_Opti(graph_acobonus, path);
-            Path_print(path);
+                    int idprev = ListInt_popFirst(path->list);
+                    int idnext = -1;
 
-            free_path(&path);
-            
-        #endif // TSP_OPTI_LOCAL
-
-        #ifdef BONUS_ALL_START
-
-            //ACO Bonus all start -------------------------------------------
-            for (int i = 0; i != node_count_acobonus; i++) {
-                path = Graph_tspFromHeuristic(graph_acobonus, i);
-                    
-                printf("#############\n");
-                printf(" path dist h =%d %f\n",i, path->distance);
-                printf("#############\n");
-
-                int idprev = ListInt_popFirst(path->list);
-                int idnext = -1;
-
-                for (int u = 0; u != phem->size; u++) {
-                    for (int v = 0; v != phem->size; v++) {
-                        if (u != v) {
-                        Graph_setArc(phem, u, v, 0.4f);
+                    for (int u = 0; u != phem->size; u++) {
+                        for (int v = 0; v != phem->size; v++) {
+                            if (u != v) {
+                                Graph_setArc(phem, u, v, 0.4f);
+                            }
                         }
+                    }
+
+                    while (!ListInt_isEmpty(path->list)) {
+                        idnext = ListInt_popFirst(path->list);
+                        Graph_setArc(phem, idprev, idnext, 2);
+                        idprev = idnext;
+                    }
+
+                    free_path(&path);
+
+                    path = Graph_tspFromACO_Bonus(graph_acobonus, phem, i, 60, 100, 2.f, 3.f, 0.1f, 2.0f);
+
+                    printf("#############\n");
+                    printf("%d %f\n", i, path->distance);
+                    printf("#############\n");
+
+                    if (minid == -1 || mindist > path->distance) {
+                        minid = i;
+                        mindist = path->distance;
                     }
                 }
 
-                while (!ListInt_isEmpty(path->list)) {
-                    idnext = ListInt_popFirst(path->list);
-                    Graph_setArc(phem, idprev, idnext, 2);
-                    idprev = idnext;
-                }
+                printf("%d %f\n", minid, mindist);
 
-                free_path(&path);
-
-                path = Graph_tspFromACO_Bonus(graph_acobonus, phem, i, 60, 100, 2.f, 3.f, 0.1f, 2.0f);
                 
-                printf("#############\n");
-                printf("%d %f\n",i, path->distance);
-                printf("#############\n");
+            #endif //BONUS_ALL_START
 
-                if (minid == -1 || mindist > path->distance) {
-                    minid = i;
-                    mindist = path->distance;
+            #ifdef TSP_OPTI_LOCAL
+
+                //OPTI-LOCAL-----------------------------------------------------
+                path = Local_Opti(graph_acobonus, path);
+                Path_print(path);
+
+            #endif // TSP_OPTI_LOCAL
+
+            #ifdef FILE_CREATE
+
+                Path* complet_path_acobonus = NULL;
+
+                if (!ListInt_isEmpty(path->list)) {
+                    complet_path_acobonus = Path_create(tab_node_acobonus[0]);
+
+                    int prev = 0, current = ListInt_popFirst(path->list);
+
+                    while (!ListInt_isEmpty(path->list)) {
+                        prev = current;
+
+                        current = ListInt_popFirst(path->list);
+
+                        ListInt* aco_list = under_graph_acobonus->sous_graph[prev][current]->list;
+
+                        if (!ListInt_isEmpty(aco_list))
+                            tmp = ListInt_popFirst(aco_list);
+
+                        ListInt_concatenate(complet_path_acobonus->list, aco_list);
+                    }
                 }
 
-                free_path(&path);
-            }
+                //FILE-CREATE-----------------------------------------------
+                strcpy(fileName, "..\\Output_geojson\\TSP_Aco_bonus.geojson");
 
-            printf("%d %f\n", minid, mindist);
+                if (FileFonction_fileExist(fileName))
+                    FileFonction_deleteFile(fileName);
 
-            free_path(&path);
+                FileFonction_createFile(fileName);
 
-        #endif //BONUS_ALL_START
+                //Print_writeGeoJson(fileName, complet_path_aco, coord_plan);
+                Print_writeGeoJson_Bonus(fileName, complet_path_acobonus, coord_plan, tab_node_acobonus, node_count_acobonus);
+
+                free_path(&complet_path_acobonus);
+
+            #endif // FILE_CREATE
+        #endif // TSP_GLOUTON_ACO
 
             //FREE------------------------------------------------------
             free_graph(&graph_plan);

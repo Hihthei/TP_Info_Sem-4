@@ -1,32 +1,83 @@
-# TP_Info_Sem-4
-TP d'info semestre 4
+# TPF_TP_Sem-4
+# TP d'info semestre 4
 
-GENERAL :
+## GENERAL :
 	
-Dans le fichier "Setting.h", il est possible de :
+- Dans le fichier "Setting.h", il est possible de :
 
-- Lancer une run "BASIC_RUN", soit une run simple avec le split basique ainsi que le bagging sur les instances (Partie obligatoire du TP).
+- Commenter ou décommenter les parties de codes que nous souhaitons tester (il est possible de tester tout en même temps)
 
-- Lancer une run "BONUS", soit une run permettant de tester les bonus (SAVE et PAINT) avec le split amélioré ainsi que le bagging sur les features (plutôt que sur les instances). Ne pas tester les bonus même temps (le DATASET_MAISON manque d'instances pour le moment).
+|      FILE_CREATE : Créer un output [name].geojson qui est utilisable et visualisable sur le site umap.
+|                    Ce fichier est créé dans le dossier 'Output_geojson'
 
-- Lancer une run "FOR_MOODLE", soit une run permettant d'obtenir un score sur MOODLE (car les sorties sont celles attendues sur moodle).
-// (Pour le meilleur résultat obtenu, voir la vidéo contenu dans le dossier. C'est une run avec NOMBRE_ARBRES 50, PRUNNING_THRESHOLD 1.0f, MAX_DEPTH // 25, le split basique et le bagging sur les features soit BAGGING_PROPORTION 1.0f. -> Score : 9.58 / 10)
+|      FOR_MOODLE : Réponses correspondants au format demandé sur moodle
+      
+|      DIJKSTRA_1 :  Lance un algorithme Dijkstra supplémenté d'un tas binaire
+•                    -> Compatible avec une création de fichier
 
-- Définir les paramètres suivants : CHEMIN_IMAGE_BMP (le chemin d'accès de la nouvelle instance pour DATASET_MAISON), NOMBRE_ARBRES (le nombre d'arbres pour une forêt), PRUNNING_THRESHOLD (le seuil (inclus) au-delà duquel un noeud est considéré être une feuille), MAX_DEPTH (la profondeur maximale des arbres du programme), BAGGING_PROPORTION (la proportion d'instances utilisée pour les arbres).
+|      PATH_MATRIX_2 : Créer le sous graphe de chemin ainsi que la matrice de chemin {
+•                    -> Compatible avec une sauvegarde
 
-- Définir si l'on veut utiliser le split initial/amélioré et le bagging initial/amélioré de manière individuelle (On peut activer la version améliorée des deux, de l'un ou de l'autre, ou d'aucun, en même temps.).
+|            LOAD_MATRIX : Charge une matrice pré-enregistrée    -\
+•                                                                  |-> La charge de la matrice prendre le dessus vis-à-vis de la sauvegarde.
+|            PATH_MATRIX_SAVE : Sauvegarde la matrice créée      -/    Il n'est pas possible de sauvegarder un graph précédemment chargé.
+      }
 
-BONUS (fonctionnement)
-- SAVE : créer un fichier [filename].txt et le rempli avec la randomForest. Il est également possible de charger un fichier [filename].txt (si celui-ci respecte l'indentation requise). C'est une application terminal, il faut suivre les instructions au lancement du programme.
-	-> Buffer et test de réponse cohérente mise en place.
+|      TSP_HEURISTIC_3 : Lance un algorithme glouton basé sur des algorithmes de Dijkstra (binaire)
+•                        -> Compatible avec une création de fichier
 
-- "PAINT" :
-- Se rendre dans le dossier "DATASET" puis ouvrir avec Paint l'image "WrittingTest.bmp". Prendre alors un crayon de couleur blanche et dessiner le nombre souhaité. Il faut alors "SAVE AS" l'image à la place de "WrittingTest6" dans le dossier "Dataset" ou tout autre nom à condition que son chemin d'accès soit récupéré et mis à la place de celui présent dans "Settings.h" -> CHEMIN_IMAGE_BMP.
-- On lance alors une run en mode "BONUS" -> "DATASET_MAISON" avec MNIST_train comme fichier d'entrainement (dans le "main.c", mettre le chemin d'accès de "MNIST_train" comme définition de "path_train").
-- Deux choix sont alors proposés : "Participer au dataset_maison" enregistrera/ajoutera l'image comme nouvelle instance dans le fichier "WrittingDataset.txt" du dossier "Dataset" et lancera alors le programme avec ce dernier fichier comme fichier de test.
-- Le second choix permet de ne pas enregistrer l'instance et de l'utiliser (seule) comme fichier de test.
+|      TSP_ACO_4 : Lance un algorithme d'ACO
+•                  -> Compatible avec une création de fichier
 
-WARNING :
-- Un dossier DATASET est inclus dans le projet. Il ne contient pas les datasets de base mais ceux utilisés pour les bonus.
-- L'option DATASET_MAISON n'est pas très précise. En effet, elle ne comporte que peu d'instances (pour l'instant). Il serait possible de définir ce dataset comme fichier d'entraînement lorsque celui-ci sera suffisamment rempli.
-- La classe du nombre est rentrer est équivalent au nombre lui-même (exemple : écrivez "2" si vous avez dessiner un 2).
+
+# TSP_ACO_BONUS : Zone de définition des bonus de l'ACO {
+•                 -> Compatible avec une création de fichier
+•                 -> Compatible avec une sauvegarde
+
+|      TSP_ACO_LOAD_MATRIX : Charge un graph pré-enregistré (même algorithme que le PATH_MATRIX)   -\
+•                                                                                                    |-> La charge de la matrice prendre le dessus vis-à-vis de la sauvegarde.
+|      TSP_ACO_SAVE_MATRIX : Sauvegarde le graph de l'aco                                          -/    Il n'est pas possible de sauvegarder un graph précédemment chargé.
+
+|      TSP_GLOUTON_ACO : Lance un glouton sur un graph de phéromones, accélère le processus de l'ACO
+
+|      BONUS_ALL_START : Lance l'algorithme de l'ACO en testant tout les départs
+
+|      TSP_OPTI_LOCAL : Parcours le chemin de retour de l'ACO pour voir s'il n'existe pas de chemin plus adapté (peut affecté l'ordre du chemin)
+
+|      TSP_ACO_GI : Lance en mode grande instance sur la France (compter environ 8 minutes en release pour un Glouton + ACO)
+}
+
+|BONUS (fonctionnement)
+|- LOAD : ouvre un fichier spécial (stocké dans Personnal_Data), crée ensuite un graphe à partir de la fonction Graph_Load()
+|- SAVE : crée un fichier spécifique (toujours dans Personnal_Data). Noter qu'on ne peut pas load et save en même temps
+|- GLOUTON_ACO : lance un algorithme glouton sur un graphe de phéromones, diminue le nombre d'instances totales nécessaires pour déterminer un bon chemin
+|- OPTI_LOCAL : lance des permutations entre les différentes points du chemin pour tester différentes versions. Peut trouver un meilleur chemin
+
+|WARNING :
+|Pour le bon fonctionnement du programme, il est demandé que les fichiers répondent à l'implémentation suivante :
+
+_________________________________________
+|                                        |
+|Data/                                   |
+|    |_*.txt                             |
+|                                        |
+|TPF_Donnees/                            |
+|    |_1_Dijkstra/                       |
+|        |_*.txt                         |
+|    |_2_Path_Matrix/                    |
+|        |_*.txt                         |
+|    |_3_TSP_Heuristic/                  |
+|        |_*.txt                         |
+|    |_4_TSP_ACO/                        |
+|        |_*.txt                         |
+|    |_5_Grande_instance/                |
+|        |_*.txt                         |
+|                                        |
+|Personal_Data/                          |
+|    |_2_Path_matrix                     |
+|        |_*.txt                         |
+|    |_4_TSP_ACO                         |
+|        |_*.txt                         |
+|                                        |
+|.sln                                    |
+|________________________________________|

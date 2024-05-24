@@ -265,7 +265,9 @@ void Graph_acoPheromoneUpdatePath(Graph* pheromones, Path* path, float q){
 
 
 
-
+//Bon courage !
+//Au moment de l'écriture de ce code, seuls Dieu et le développeur comprenaient l'algorithme.
+//Dorénavent seul Dieu peut vous aider.
 Path* Local_Opti(Graph *graph, Path *path){
 	int* tab_id = (int*)calloc(graph->size + 1 , sizeof(int));
 	AssertNew(tab_id);

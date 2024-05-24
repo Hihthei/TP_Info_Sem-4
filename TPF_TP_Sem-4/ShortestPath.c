@@ -1,5 +1,6 @@
 #include "ShortestPath.h"
 #include "Bin_Heap.h"
+
 Path *Graph_shortestPath(Graph *graph, int start, int end)
 {
     int size = Graph_size(graph);
@@ -66,8 +67,6 @@ void Graph_dijkstra(Graph *graph, int start, int end, int *predecessors, float *
         distances[i] = INFINITY;
     }
     distances[start] = 0.0f;
-
-
 
     for(int n =0;n!=graph->size;n++)
     {
