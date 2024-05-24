@@ -129,3 +129,12 @@ void Bin_Heap_destroy(Bin_Heap *heap) {
 	free(heap->bin_tab);
 	free(heap);
 }
+
+bool Bin_Heap_contains(Bin_Heap* heap, int index) {
+	for (int i = 0; i < heap->sizeact; i++) {
+		if (heap->bin_tab[i]->index == index) {
+			return true;
+		}
+	}
+	return false;
+}
