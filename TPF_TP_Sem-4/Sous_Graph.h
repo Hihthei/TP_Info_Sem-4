@@ -17,4 +17,8 @@
 
 	void Sous_Graph_print(UnderGraph* under_graph);
 
+	void Sous_Graph_save_path(FILE* pfile, Path* path);
+
+	UnderGraph* Sous_Graph_load(char* fileName);
+
 #endif

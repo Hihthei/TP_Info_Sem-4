@@ -55,6 +55,11 @@
     /// @return Le graphe créé.
     Graph *Graph_load(char *filename);
 
+    /// @brief Retourne le nombre d'arc du graph
+    /// @param graph le graphe.
+    /// @return Le nombre d'arc du graph
+    int Graph_get_Arc_Count(Graph* graph);
+
     /// @brief Affiche le graphe.
     /// @param graph Le graphe 
     void Graph_print(Graph *graph);

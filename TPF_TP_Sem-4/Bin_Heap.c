@@ -111,8 +111,6 @@ void Bin_Heap_remove(Bin_Heap* heap) {
 	return ;
 }
 
-
-
 void Bin_Heap_print(Bin_Heap* heap) {
 	for (int i = 0; i < heap->sizeact; i++) {
 		printf("(%d,%.1f) ", heap->bin_tab[i]->index, heap->bin_tab[i]->distance);
