@@ -27,6 +27,8 @@
     
     #define DIJKSTRA_1
 
+    #define ASTAR
+
     #define PATH_MATRIX_2
 
         #ifdef PATH_MATRIX_2

@@ -1,4 +1,4 @@
-#include "Sous_Graph.h"
+#include "AStar.h"
 #include "Bin_Heap.h"
 
 void free_graph(Graph** graph) {
@@ -107,6 +107,47 @@ int main() {
         pfile = NULL;
 
     #endif // DIJKSTRA_1
+
+    #ifdef ASTAR
+
+            pfile = fopen("../TPF_Donnees/1_Dijkstra/input1.txt", "r");
+            AssertNew(pfile);
+
+            tmp = fscanf(pfile, "%[^\n]\n", path_graph);
+            tmp = fscanf(pfile, "%[^\n]\n", path_inter);
+
+            int tab_star[2] = { 0 };
+            tmp = fscanf(pfile, "%d %d", &tab_star[0], &tab_star[1]);
+
+            //GRAPH-----------------------------------------------------
+            graph_plan = Graph_load(path_graph);
+            coord_plan = Print_createTab(path_inter);
+
+            //ASTAR----------------------------------------------------
+            path = AStar_shortestPath(graph_plan, coord_plan, start, end);
+
+            Path_print(path);
+
+            #ifdef FILE_CREATE
+
+                    strcpy(fileName, "..\\Output_geojson\\AStar.geojson");
+                    if (FileFonction_fileExist(fileName))
+                        FileFonction_deleteFile(fileName);
+
+                    FileFonction_createFile(fileName);
+                    Print_writeGeoJson_Bonus(fileName, path, coord_plan, &start, 1);
+
+            #endif // FILE_CREATE
+
+            // FREE------------------------------------------------------
+            free_graph(&graph_plan);
+            free_coord(&coord_plan);
+            free_path(&path);
+
+            fclose(pfile);
+            pfile = NULL;
+
+    #endif // ASTAR
 
     #ifdef PATH_MATRIX_2
 
@@ -597,16 +638,17 @@ int main() {
         fclose(file_save);
     file_save = NULL;
 
-    if (graph_plan)
-        Graph_destroy(graph_plan);
+    free_graph(&graph_plan);
     graph_plan = NULL;
 
-    if (coord_plan)
-        Sous_Graph_destroy(coord_plan);
+    free_coord(&coord_plan);
     coord_plan = NULL;
 
-    if (path)
+    if (path && path->list)
         Path_destroy(path);
+    else
+        free(path);
+
     path = NULL;
 
     //TIME CLOCK END -------------------------------------------
