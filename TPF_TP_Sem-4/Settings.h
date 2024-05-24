@@ -25,20 +25,20 @@
 
     //#define FOR_MOODLE
     
-    //#define DIJKSTRA_1
+    #define DIJKSTRA_1
 
     #define PATH_MATRIX_2
 
         #ifdef PATH_MATRIX_2
             
             #define LOAD_MATRIX // charger une matrice de chemin pré-sauvegardée
-            //#define PATH_MATRIX_SAVE
+            #define PATH_MATRIX_SAVE
 
         #endif // PATH_MATRIX_2
 
-    //#define TSP_HEURISTIC_3
+    #define TSP_HEURISTIC_3
 
-    //#define TSP_ACO_4
+    #define TSP_ACO_4
 
         #ifdef TSP_ACO_4
 
@@ -46,11 +46,11 @@
 
         #endif // TSP_ACO_4
 
-    //#define TSP_ACO_BONUS
+    #define TSP_ACO_BONUS
 
         #ifdef TSP_ACO_BONUS
 
-            //#define BONUS_ALL_START
+            #define BONUS_ALL_START
 
         #endif // TSP_ACO_BONUS
 

@@ -478,6 +478,8 @@ int main() {
         graph_plan = Graph_load(path_graph);
         coord_plan = Print_createTab(path_inter);
 
+        //TODO -> Mettre le save du path_matrix ici aussi
+
         Graph* graph_acobonus = Graph_create(node_count_acobonus);
 
         //Graph_load("../TPF_Donnees/4_TSP_ACO/save4.txt"); <---------- POUR LOAD AVEC LA SAVE
@@ -503,6 +505,8 @@ int main() {
             }
         }
 
+
+        //GLOUTON-BEFORE-ACO--------------------------------------
         Graph* phem = Graph_create(graph_acobonus->size);
         for (int u = 0; u != phem->size; u++) {
             for (int v = 0; v != phem->size; v++) {
@@ -512,6 +516,7 @@ int main() {
             }
         }
         //Graph_print(graph_acobonus);
+
         path = Graph_tspFromHeuristic(graph_acobonus, 0);
 
         int idprev = ListInt_popFirst(path->list);
@@ -533,6 +538,7 @@ int main() {
 
         Path_print(path);
 
+        //OPTI-LOCAL-----------------------------------------------------
         path = Local_Opti(graph_acobonus, path);
         Path_print(path);
 
@@ -577,8 +583,31 @@ int main() {
 
             printf("%d %f\n", minid, mindist);
 
+
+            //TODO - FREE
         #endif //BONUS_ALL_START
     #endif //TSP_ACO_BONUS
+
+    //FREE------------------------------------------------------
+    if (pfile)
+        fclose(pfile);
+    pfile = NULL;
+
+    if (file_save)
+        fclose(file_save);
+    file_save = NULL;
+
+    if (graph_plan)
+        Graph_destroy(graph_plan);
+    graph_plan = NULL;
+
+    if (coord_plan)
+        Sous_Graph_destroy(coord_plan);
+    coord_plan = NULL;
+
+    if (path)
+        Path_destroy(path);
+    path = NULL;
 
     //TIME CLOCK END -------------------------------------------
     end = clock();
