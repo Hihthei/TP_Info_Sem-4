@@ -40,7 +40,7 @@ void Sous_Graph_destroy(UnderGraph* under_graph) {
 void Sous_Graph_print(UnderGraph* under_graph) {
 	if (!under_graph)
 		return;
-
+	
 	for (int i = 0; i < under_graph->node_count; i++) {
 		for (int j = 0; j < under_graph->node_count; j++) {
 			if (i == j) {

@@ -128,7 +128,7 @@ int main() {
         coord_plan = Print_createTab(path_inter);
 
         Graph* graph_matrix = Graph_create(node_count);
-        AssertNew(graph_matrix);
+        AssertNew(graph_matrix)
 
         int* tab_node = (int*)calloc(node_count, sizeof(int));
         AssertNew(tab_node);
@@ -152,7 +152,7 @@ int main() {
                         continue;
     
                     path = Binary_Graph_shortestPath(graph_plan, tab_node[i], tab_node[j]);
-    
+                    Path_print(path);
                     if (Graph_getArc(graph_matrix, i, j) == NULL && path != NULL)
                         Graph_setArc(graph_matrix, i, j, path->distance);
     
@@ -191,33 +191,23 @@ int main() {
                 fprintf(file_save_undergraph, "%d %d\n", node_count, node_count * node_count);
 
         #endif // PATH_MATRIX_SAVE
-
+        
+        #ifdef PATH_MATRIX_SAVE // SAVE LA MATRICE ET SOUS GRAPH POUR ACO
         for (i = 0; i < node_count; i++) {
             for (j = 0; j < node_count; j++) {
-                if (i == j)
-                    printf("%d %d 0.0\n", i, j);
-                else {
-                    path = Binary_Graph_shortestPath(graph_plan, tab_node[i], tab_node[j]);
-                    printf("%d %d %.1f\n", i, j, path->distance);
+                path = Binary_Graph_shortestPath(graph_plan, tab_node[i], tab_node[j]);
+                if (i == j) {
+                    fprintf(file_save, "%d %d 0.0\n", i, j);
+                    fprintf(file_save_undergraph, "%d %d 0.0\n", i, j);
                 }
-
-                #ifdef PATH_MATRIX_SAVE // SAVE LA MATRICE POUR ACO
-
-                    if (i == j) {
-                        fprintf(file_save, "%d %d 0.0\n", i, j);
-                        fprintf(file_save_undergraph, "%d %d 0.0\n", i, j);
-                    }
-                    else {
-                        fprintf(file_save, "%d %d %f\n", i, j, path->distance);
-                        fprintf(file_save_undergraph, "%d %d %.1f ", i, j, path->distance);
-                        Sous_Graph_save_path(file_save_undergraph, path);
-                    }
-
-                #endif // PATH_MATRIX_SAVE
-
+                else {
+                    fprintf(file_save, "%d %d %f\n", i, j, path->distance);
+                    fprintf(file_save_undergraph, "%d %d %.1f ", i, j, path->distance);
+                    Sous_Graph_save_path(file_save_undergraph, path);
+                }
             }
         }
-
+        #endif // PATH_MATRIX_SAVE
         #ifdef FOR_MOODLE
 
             Graph_printMoodle(graph_matrix);
