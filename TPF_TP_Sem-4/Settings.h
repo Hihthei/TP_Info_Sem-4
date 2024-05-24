@@ -31,8 +31,8 @@
 
         #ifdef PATH_MATRIX_2
             
-            //#define LOAD_MATRIX // charger une matrice de chemin pré-sauvegardée
-            #define PATH_MATRIX_SAVE
+            #define LOAD_MATRIX // charger une matrice de chemin pré-sauvegardée
+            //#define PATH_MATRIX_SAVE
 
         #endif // PATH_MATRIX_2
 

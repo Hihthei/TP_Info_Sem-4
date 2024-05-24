@@ -110,7 +110,7 @@ int main() {
 
     #ifdef PATH_MATRIX_2
 
-        pfile = fopen("../TPF_Donnees/2_Path_matrix/input4.txt", "r");
+        pfile = fopen("../TPF_Donnees/2_Path_matrix/input1.txt", "r");
         if (!pfile)
             pfile = stdin;
 

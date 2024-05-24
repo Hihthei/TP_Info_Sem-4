@@ -54,7 +54,7 @@ void Sous_Graph_print(UnderGraph* under_graph) {
 				ListInt_print(under_graph->sous_graph[i][j]->list);
 			}
 		}
-		printf("\n\n");
+		printf("\n");
 	}
 }
 
@@ -98,7 +98,7 @@ UnderGraph* Sous_Graph_load(char* fileName) {
 	for (int i = 0; i < arc_count; i++) {
 		u = 0; v = 0; start = 0; dist = 0.0f; list_value = -1; node_list_count = 0;
 
-		tmp = fscanf(pfile, "%d %d %f %d", &u, &v, &dist, &node_list_count);
+		tmp = fscanf(pfile, "%d %d %f ", &u, &v, &dist);
 
 		if (u == v) {
 			Path* path = Path_create(0);
@@ -109,6 +109,8 @@ UnderGraph* Sous_Graph_load(char* fileName) {
 
 			continue;
 		}
+
+		tmp = fscanf(pfile, "%d ", &node_list_count);
 
 		ListInt* list = ListInt_create();
 
